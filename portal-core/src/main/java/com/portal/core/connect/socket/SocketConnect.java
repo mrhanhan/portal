@@ -1,7 +1,10 @@
-package com.portal.core.connect;
+package com.portal.core.connect.socket;
 
+import com.portal.core.connect.AbstractConnect;
+import com.portal.core.connect.IConnection;
 import lombok.SneakyThrows;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
@@ -12,7 +15,7 @@ import java.net.Socket;
  * @author Mrhan
  * @date 2021/6/10 11:51
  */
-public class SocketConnect implements IConnect{
+public class SocketConnect extends AbstractConnect implements IConnection {
 
     private final Socket socket;
     private final InputStream input;
@@ -33,5 +36,17 @@ public class SocketConnect implements IConnect{
     @Override
     public OutputStream getOutput() {
         return output;
+    }
+
+    @Override
+    public void close() throws IOException {
+        input.close();
+        output.close();
+        socket.close();
+    }
+
+    @Override
+    public boolean isAvailable() {
+        return socket.isConnected();
     }
 }
