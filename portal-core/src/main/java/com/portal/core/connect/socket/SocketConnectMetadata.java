@@ -13,18 +13,23 @@ import lombok.Setter;
 @Getter
 @Setter(value = AccessLevel.MODULE)
 public class SocketConnectMetadata {
-    /**
-     * 连接HostName
-     */
 
-    private String hostname;
-    /**
-     * 连接端口
-     */
-    private int port;
 
     private SocketConnectMetadata() {
 
+    }
+    @Getter
+    @Setter(value = AccessLevel.MODULE)
+    public static class ClientSocketConnectMetadata extends SocketConnectMetadata {
+        /**
+         * 连接HostName
+         */
+
+        private String hostname;
+        /**
+         * 连接端口
+         */
+        private int port;
     }
 
     public static class ServerSocketConnectMetadata extends SocketConnectMetadata {
@@ -41,8 +46,8 @@ public class SocketConnectMetadata {
      * @param port      连接目标端口
      * @return          返回 SocketConnectMetadata
      */
-    public static SocketConnectMetadata createSocketMetadata(String hostname, int port) {
-        SocketConnectMetadata socketConnectMetadata = new ServerSocketConnectMetadata();
+    public static ClientSocketConnectMetadata createSocketMetadata(String hostname, int port) {
+        ClientSocketConnectMetadata socketConnectMetadata = new ClientSocketConnectMetadata();
         socketConnectMetadata.hostname = hostname;
         socketConnectMetadata.port = port;
         return socketConnectMetadata;
