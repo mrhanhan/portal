@@ -49,4 +49,13 @@ public class SocketConnect extends AbstractConnect implements IConnection {
     public boolean isAvailable() {
         return socket.isConnected();
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("{");
+        sb.append("\"socket\":")
+                .append(socket);
+        sb.append('}');
+        return sb.toString();
+    }
 }

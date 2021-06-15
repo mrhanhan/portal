@@ -1,5 +1,6 @@
 package com.portal.core.connect.socket;
 
+import com.portal.core.connect.ConnectMetadata;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +13,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter(value = AccessLevel.MODULE)
-public class SocketConnectMetadata {
+public class SocketConnectMetadata implements ConnectMetadata {
 
 
     private SocketConnectMetadata() {

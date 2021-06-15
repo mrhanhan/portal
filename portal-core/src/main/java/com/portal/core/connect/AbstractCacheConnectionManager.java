@@ -27,7 +27,7 @@ public abstract class AbstractCacheConnectionManager implements ConnectionManage
                 return iConnect;
             }
         }
-        if (isSupport(metadata)) {
+        if (!isSupport(metadata)) {
             throw new IllegalArgumentException("not support "  + metadata.getClass().getSimpleName());
         }
         iConnect = createConnection(metadata);
