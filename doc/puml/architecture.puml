@@ -1,0 +1,21 @@
+@startuml
+
+card 传送门1 {
+    card 服务1
+    card 消费1
+}
+
+card 传送门2 {
+    card 服务2
+    card 消费2
+}
+
+cloud 服务注册与发现 {
+
+}
+
+
+
+
+
+@enduml
