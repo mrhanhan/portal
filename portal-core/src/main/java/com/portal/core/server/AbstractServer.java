@@ -6,7 +6,6 @@ import com.portal.core.protocol.Data;
 import com.portal.core.server.monitor.DataMonitor;
 import com.portal.core.server.monitor.SimpleDataMonitor;
 import lombok.experimental.Delegate;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashSet;
 import java.util.List;
@@ -23,7 +22,6 @@ import java.util.concurrent.TimeUnit;
  * @author Mrhan
  * @date 2021/6/15 17:47
  */
-@Slf4j
 public abstract class AbstractServer implements Server{
 
     @Delegate
@@ -46,6 +44,7 @@ public abstract class AbstractServer implements Server{
     private final Object statusLock = new Object();
 
     public AbstractServer() {
+
         // 初始化数据检测箱
         dataMonitorSet = new HashSet<>();
         try {
@@ -69,8 +68,10 @@ public abstract class AbstractServer implements Server{
 
     @Override
     public final void startUp() throws Exception {
-        // 启动连接检查项
+        // 启动事件
         onStart();
+        // 启动连接检查项
+        executorService.submit(connectionMonitor);
         // 让线程等待
         synchronized (statusLock) {
             statusLock.wait();
@@ -147,6 +148,7 @@ public abstract class AbstractServer implements Server{
      *
      * @param monitor 数据检查项
      */
+    @Override
     public void removeDataMonitor(DataMonitor monitor) {
         dataMonitorSet.remove(monitor);
     }
@@ -156,7 +158,8 @@ public abstract class AbstractServer implements Server{
      *
      * @param monitor 数据检查项
      */
-    public void addDataMonitor(DataMonitor monitor) {
+    @Override
+    public void registerDataMonitor(DataMonitor monitor) {
         dataMonitorSet.add(monitor);
         // 检测检查项，进行检测
         executorService.submit(monitor);
@@ -165,7 +168,7 @@ public abstract class AbstractServer implements Server{
 
     @Override
     public void onHandler(Connection connection) {
-        addDataMonitor(new SimpleDataMonitor(connection, this));
+        registerDataMonitor(new SimpleDataMonitor(connection, this));
     }
 
     /**
@@ -175,14 +178,11 @@ public abstract class AbstractServer implements Server{
      * @param data        调用的数据
      * @return 返回调用数据
      */
-    public byte[] onCall(DataMonitor dataMonitor, byte[] data) {
+    @Override
+    public void onHandler(DataMonitor dataMonitor, byte[] data) {
         List<ProtocolDataHandler<?>> supportList = protocolDataHandlerRegister.getSupportList(data);
         // byte转换为Data
         Data convertToData = executeProtocolDataHandlerToData(supportList, data);
-        // 服务调用器，
-        // 返回的Data转换为 bytes
-        byte[] result = executeProtocolDataHandlerToByte(supportList, convertToData);
-        return result;
     }
 
 

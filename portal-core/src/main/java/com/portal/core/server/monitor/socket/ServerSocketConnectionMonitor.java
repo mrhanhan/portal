@@ -1,7 +1,6 @@
 package com.portal.core.server.monitor.socket;
 
 import com.portal.core.Server;
-import com.portal.core.connect.ConnectionManager;
 import com.portal.core.connect.socket.ServerSocketConnectionManager;
 import com.portal.core.server.monitor.AbstractConnectionMonitor;
 
@@ -15,11 +14,7 @@ public class ServerSocketConnectionMonitor extends AbstractConnectionMonitor {
 
 
     public ServerSocketConnectionMonitor(Server server) {
-        super(server);
+        super(server, new ServerSocketConnectionManager(1720));
     }
 
-    @Override
-    public ConnectionManager getConnectionManager() {
-        return new ServerSocketConnectionManager(1720);
-    }
 }

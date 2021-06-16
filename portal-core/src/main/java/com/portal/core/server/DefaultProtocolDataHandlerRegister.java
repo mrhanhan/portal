@@ -21,12 +21,12 @@ public class DefaultProtocolDataHandlerRegister implements ProtocolDataHandlerRe
     }
 
     @Override
-    public void register(ProtocolDataHandler<?> dataMonitor) {
+    public void registerProtocolDataHandler(ProtocolDataHandler<?> dataMonitor) {
         protocolDataHandlerSet.add(dataMonitor);
     }
 
     @Override
-    public void remove(ProtocolDataHandler<?> dataMonitor) {
+    public void removeProtocolDataHandler(ProtocolDataHandler<?> dataMonitor) {
         protocolDataHandlerSet.remove(dataMonitor);
     }
 

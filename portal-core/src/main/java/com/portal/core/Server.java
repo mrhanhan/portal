@@ -2,6 +2,8 @@ package com.portal.core;
 
 import com.portal.core.connect.Connection;
 import com.portal.core.server.ConnectionHandler;
+import com.portal.core.server.DataHandler;
+import com.portal.core.server.DataMonitorRegister;
 import com.portal.core.server.ProtocolDataHandlerRegister;
 
 /**
@@ -10,7 +12,7 @@ import com.portal.core.server.ProtocolDataHandlerRegister;
  * @author Mrhan
  * @date 2021/6/15 17:22
  */
-public interface Server extends ConnectionHandler<Connection>, ProtocolDataHandlerRegister {
+public interface Server extends ConnectionHandler<Connection>, ProtocolDataHandlerRegister, DataHandler, DataMonitorRegister {
 
 
     /**
@@ -29,4 +31,5 @@ public interface Server extends ConnectionHandler<Connection>, ProtocolDataHandl
      * @param e 异常处理
      */
     void handleException(Exception e);
+
 }

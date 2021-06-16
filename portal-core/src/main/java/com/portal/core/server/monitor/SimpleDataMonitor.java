@@ -1,5 +1,6 @@
 package com.portal.core.server.monitor;
 
+import com.portal.core.Server;
 import com.portal.core.connect.Connection;
 import com.portal.core.server.AbstractServer;
 import lombok.Getter;
@@ -21,14 +22,14 @@ public class SimpleDataMonitor implements DataMonitor {
 
     @Getter
     public final Connection connection;
-    private final AbstractServer server;
+    private final Server server;
     private final AtomicBoolean status = new AtomicBoolean(false);
 
     @Override
     public void run() {
         InputStream input = connection.getInput();
-        OutputStream output = connection.getOutput();
         byte[] data = new byte[512];
+        status.set(true);
         int length = 0;
         try {
             ByteArrayOutputStream cache = new ByteArrayOutputStream();
@@ -39,11 +40,9 @@ public class SimpleDataMonitor implements DataMonitor {
                 if (length < data.length) {
                     byte[] bytes = cache.toByteArray();
                     cache.reset();
-                    // 调用请求
-                    byte[] result = server.onCall(this, bytes);
-                    // 写入数据
-                    output.write(result);
-                    output.flush();
+                    // 处理数据
+                    server.onHandler(this, bytes);
+
                 }
             }
         }catch (Exception e) {
