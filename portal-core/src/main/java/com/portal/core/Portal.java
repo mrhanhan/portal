@@ -1,6 +1,7 @@
 package com.portal.core;
 
 import com.portal.core.connect.Connection;
+import com.portal.core.protocol.Protocol;
 import com.portal.core.server.ConnectionHandler;
 import com.portal.core.server.DataHandler;
 import com.portal.core.server.DataMonitorRegister;
@@ -12,8 +13,13 @@ import com.portal.core.server.ProtocolDataHandlerRegister;
  * @author Mrhan
  * @date 2021/6/15 17:22
  */
-public interface Server extends ConnectionHandler<Connection>, ProtocolDataHandlerRegister, DataHandler, DataMonitorRegister {
+public interface Portal extends ConnectionHandler<Connection>, ProtocolDataHandlerRegister, DataHandler, DataMonitorRegister {
 
+    /**
+     * 添加一些
+     * @param protocol  Protocol
+     */
+    void addProtocol(Protocol<?> protocol);
 
     /**
      * 启动服务

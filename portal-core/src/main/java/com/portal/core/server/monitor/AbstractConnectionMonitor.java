@@ -1,6 +1,6 @@
 package com.portal.core.server.monitor;
 
-import com.portal.core.Server;
+import com.portal.core.Portal;
 import com.portal.core.connect.Connection;
 import com.portal.core.connect.ConnectionManager;
 import com.portal.core.connect.socket.SocketConnectMetadata;
@@ -19,7 +19,7 @@ public abstract class AbstractConnectionMonitor implements ConnectionMonitor {
 
     public volatile boolean status = false;
 
-    private final Server server;
+    private final Portal server;
     @Getter
     private final ConnectionManager connectionManager;
 

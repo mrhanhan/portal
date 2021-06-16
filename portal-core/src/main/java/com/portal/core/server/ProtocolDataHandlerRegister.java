@@ -1,5 +1,7 @@
 package com.portal.core.server;
 
+import com.portal.core.protocol.Data;
+
 /**
  * ProtocolDataHandlerRegister
  * 数据检查项注册程序
@@ -11,13 +13,13 @@ public interface ProtocolDataHandlerRegister {
      * 数据检查项处理程序
      * @param dataMonitor   数据检查项处理程序
      */
-    void registerProtocolDataHandler(ProtocolDataHandler<?> dataMonitor);
+    void registerProtocolDataHandler(ProtocolDataHandler<? extends Data> dataMonitor);
 
     /**
      * 移除注册
      * @param dataMonitor   移除注册
      */
-    void removeProtocolDataHandler(ProtocolDataHandler<?> dataMonitor);
+    void removeProtocolDataHandler(ProtocolDataHandler<? extends Data> dataMonitor);
 
 
 }

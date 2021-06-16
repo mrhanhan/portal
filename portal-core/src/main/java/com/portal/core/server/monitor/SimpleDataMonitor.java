@@ -1,14 +1,12 @@
 package com.portal.core.server.monitor;
 
-import com.portal.core.Server;
+import com.portal.core.Portal;
 import com.portal.core.connect.Connection;
-import com.portal.core.server.AbstractServer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -22,7 +20,7 @@ public class SimpleDataMonitor implements DataMonitor {
 
     @Getter
     public final Connection connection;
-    private final Server server;
+    private final Portal server;
     private final AtomicBoolean status = new AtomicBoolean(false);
 
     @Override

@@ -1,6 +1,6 @@
 package com.portal.core.protocol;
 
-import com.portal.core.Convert;
+import com.portal.core.server.ProtocolDataHandler;
 
 /**
  * IProtocol
@@ -12,7 +12,7 @@ import com.portal.core.Convert;
  * @author Mrhan
  * @date 2021/6/9 16:09
  */
-public interface Protocol {
+public interface Protocol<T extends Data> {
     /**
      * 协议名称
      * @return  返回协议名称
@@ -38,15 +38,8 @@ public interface Protocol {
     int getLevel();
 
     /**
-     * 序列化
-     * @return  序列化
+     * 获取协议的数据处理程序
+     * @return  协议的数据处理程序
      */
-    Convert<Data, byte[]> serial();
-
-    /**
-     * 反序列化
-     * @return  序列化
-     */
-    Convert<byte[], Data> deSerial();
-
+    ProtocolDataHandler<T> getProtocolDataHandler();
 }

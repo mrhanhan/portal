@@ -13,7 +13,7 @@ public interface Data {
      * 获取协议名称
      * @return  获取协议名称
      */
-    Protocol getProtocol();
+    Protocol<?> getProtocol();
 
     /**
      * 获取连接对象

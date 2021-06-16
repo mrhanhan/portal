@@ -1,8 +1,9 @@
 package com.portal.core.server;
 
-import com.portal.core.Server;
+import com.portal.core.Portal;
 import com.portal.core.connect.Connection;
 import com.portal.core.protocol.Data;
+import com.portal.core.protocol.Protocol;
 import com.portal.core.server.monitor.DataMonitor;
 import com.portal.core.server.monitor.SimpleDataMonitor;
 import lombok.experimental.Delegate;
@@ -22,7 +23,7 @@ import java.util.concurrent.TimeUnit;
  * @author Mrhan
  * @date 2021/6/15 17:47
  */
-public abstract class AbstractServer implements Server{
+public abstract class AbstractPortal implements Portal {
 
     @Delegate
     public DefaultProtocolDataHandlerRegister protocolDataHandlerRegister;
@@ -43,7 +44,7 @@ public abstract class AbstractServer implements Server{
      */
     private final Object statusLock = new Object();
 
-    public AbstractServer() {
+    public AbstractPortal() {
 
         // 初始化数据检测箱
         dataMonitorSet = new HashSet<>();
@@ -53,6 +54,7 @@ public abstract class AbstractServer implements Server{
             handleException(e);
         }
     }
+
 
     /**
      * 引导启动，初始化各种程序
@@ -131,6 +133,11 @@ public abstract class AbstractServer implements Server{
 
     }
 
+    @Override
+    public void addProtocol(Protocol<?> protocol) {
+        registerProtocolDataHandler(protocol.getProtocolDataHandler());
+    }
+
     /**
      * 初始化连接检查项，检测各种连接信息
      *
@@ -182,7 +189,9 @@ public abstract class AbstractServer implements Server{
     public void onHandler(DataMonitor dataMonitor, byte[] data) {
         List<ProtocolDataHandler<?>> supportList = protocolDataHandlerRegister.getSupportList(data);
         // byte转换为Data
-        Data convertToData = executeProtocolDataHandlerToData(supportList, data);
+        Data convertToData = executeProtocolDataHandlerToData(dataMonitor, supportList, data);
+        // 输出
+        System.out.println(convertToData);
     }
 
 
@@ -204,11 +213,17 @@ public abstract class AbstractServer implements Server{
     /**
      * 执行协议数据转换器，转换byte => data
      *
+     * @param dataMonitor 数据检查项
      * @param supportList 可以使用的数据转换器
      * @param data        bytes
      * @return 返回转换后的Data
      */
-    protected abstract Data executeProtocolDataHandlerToData(List<ProtocolDataHandler<?>> supportList, byte[] data);
+    protected  Data executeProtocolDataHandlerToData(DataMonitor dataMonitor, List<ProtocolDataHandler<?>> supportList, byte[] data) {
+        if (supportList.isEmpty()) {
+            return null;
+        }
+        return supportList.get(0).serial(dataMonitor, data);
+    }
 
     /**
      * 执行协议数据转换器，转换byte => data
@@ -217,6 +232,12 @@ public abstract class AbstractServer implements Server{
      * @param data        bytes
      * @return 返回转换后的Data
      */
-    protected abstract byte[] executeProtocolDataHandlerToByte(List<ProtocolDataHandler<?>> supportList, Data data);
+    protected byte[] executeProtocolDataHandlerToByte(List<ProtocolDataHandler<? extends Data>> supportList, Data data) {
+        if (supportList.isEmpty()) {
+            return null;
+        }
+        ProtocolDataHandler dataHandler = supportList.get(0);
+        return dataHandler.deSerial(data);
+    }
 
 }
