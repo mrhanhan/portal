@@ -2,7 +2,7 @@ package com.portal.core.connect.socket;
 
 import com.portal.core.connect.AbstractCacheConnectionManager;
 import com.portal.core.connect.ConnectMetadata;
-import com.portal.core.connect.IConnection;
+import com.portal.core.connect.Connection;
 
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -20,7 +20,7 @@ public class ClientSocketConnectionManager extends AbstractCacheConnectionManage
     }
 
     @Override
-    protected IConnection createConnection(ConnectMetadata metadata) throws Exception {
+    protected Connection createConnection(ConnectMetadata metadata) throws Exception {
         SocketConnectMetadata.ClientSocketConnectMetadata connectMetadata = (SocketConnectMetadata.ClientSocketConnectMetadata) metadata;
         Socket socket = new Socket();
         if (connectMetadata.getHostname() != null) {

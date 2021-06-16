@@ -8,7 +8,7 @@ import java.lang.reflect.InvocationTargetException;
  * @author Mrhan
  * @date 2021/6/10 11:26
  */
-public interface IService {
+public interface Service {
     /**
      * 获取服务名称
      * @return  服务名称

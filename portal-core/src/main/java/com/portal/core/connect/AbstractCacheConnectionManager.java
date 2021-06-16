@@ -12,15 +12,15 @@ import java.util.Map;
  */
 public abstract class AbstractCacheConnectionManager implements ConnectionManager{
 
-    private final Map<ConnectMetadata, IConnection> cacheMap;
+    private final Map<ConnectMetadata, Connection> cacheMap;
 
     public AbstractCacheConnectionManager() {
         cacheMap = createCacheMap();
     }
 
     @Override
-    public IConnection getConnection(ConnectMetadata metadata) throws Exception {
-        IConnection iConnect = null;
+    public Connection getConnection(ConnectMetadata metadata) throws Exception {
+        Connection iConnect = null;
         if (cacheMap.containsKey(metadata)) {
             iConnect = cacheMap.get(metadata);
             if (iConnect.isAvailable()) {
@@ -42,19 +42,19 @@ public abstract class AbstractCacheConnectionManager implements ConnectionManage
      * @return              IConnection
      * @throws Exception    创建连接的时候的错误问题
      */
-    protected abstract IConnection createConnection(ConnectMetadata metadata) throws Exception;
+    protected abstract Connection createConnection(ConnectMetadata metadata) throws Exception;
 
     /**
      * 创建用于缓存的Map
      * @return Map
      */
-    protected  Map<ConnectMetadata, IConnection> createCacheMap() {
+    protected  Map<ConnectMetadata, Connection> createCacheMap() {
         return new HashMap<>(6);
     }
 
     @Override
     public void close() throws IOException {
-        Map<ConnectMetadata, IConnection> connectionMap = new HashMap<>(this.cacheMap);
+        Map<ConnectMetadata, Connection> connectionMap = new HashMap<>(this.cacheMap);
         this.cacheMap.clear();
         connectionMap.forEach((k, v) -> {
             if (v.isAvailable()) {

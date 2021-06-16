@@ -9,7 +9,7 @@ import java.io.OutputStream;
  * @author Mrhan
  * @date 2021/6/9 16:27
  */
-public interface IConnection extends AutoCloseable {
+public interface Connection extends AutoCloseable {
     /**
      * 获取输入
      * @return  输入
@@ -33,6 +33,12 @@ public interface IConnection extends AutoCloseable {
      * @return ConnectMetadata
      */
     ConnectMetadata getMetadata();
+
+    /**
+     * 获取连接会话
+     * @return  连接会话
+     */
+    ConnectionSession getSession();
 
     /**
      * 是否可用

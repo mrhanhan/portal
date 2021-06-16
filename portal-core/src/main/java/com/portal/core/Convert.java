@@ -6,7 +6,7 @@ package com.portal.core;
  * @author Mrhan
  * @date 2021/6/9 16:24
  */
-public interface IConvert<IN, OUT> {
+public interface Convert<IN, OUT> {
     /**
      * 输入数据
      * @param in    in

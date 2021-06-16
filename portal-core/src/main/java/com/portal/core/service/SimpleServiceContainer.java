@@ -9,16 +9,16 @@ import java.util.Map;
  * @author Mrhan
  * @date 2021/6/10 11:33
  */
-public class SimpleServiceContainer implements IServiceContainer {
+public class SimpleServiceContainer implements ServiceContainer {
 
-    private Map<String, IService> serviceMap;
+    private Map<String, Service> serviceMap;
 
     public SimpleServiceContainer() {
         serviceMap = new Hashtable<>();
     }
 
     @Override
-    public void register(IService service) {
+    public void register(Service service) {
         if (serviceMap.containsKey(service.getServiceName())) {
             throw new IllegalArgumentException("服务已存在:" + service.getServiceName());
         }
@@ -26,7 +26,12 @@ public class SimpleServiceContainer implements IServiceContainer {
     }
 
     @Override
-    public IService getService(String serviceName) {
+    public Service getService(String serviceName) {
         return serviceMap.get(serviceName);
+    }
+
+    @Override
+    public void clear() {
+        serviceMap.clear();
     }
 }

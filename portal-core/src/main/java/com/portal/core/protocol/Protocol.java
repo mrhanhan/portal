@@ -1,6 +1,6 @@
-package com.portal.core;
+package com.portal.core.protocol;
 
-import com.portal.core.model.Invoke;
+import com.portal.core.Convert;
 
 /**
  * IProtocol
@@ -12,7 +12,7 @@ import com.portal.core.model.Invoke;
  * @author Mrhan
  * @date 2021/6/9 16:09
  */
-public interface IProtocol {
+public interface Protocol {
     /**
      * 协议名称
      * @return  返回协议名称
@@ -38,15 +38,15 @@ public interface IProtocol {
     int getLevel();
 
     /**
-     * 获取序列号对象
-     * @return  转换对象
+     * 序列化
+     * @return  序列化
      */
-    IConvert<Invoke, byte[]> getSerialization();
+    Convert<Data, byte[]> serial();
 
     /**
-     * 获取反序列化对象
-     * @return  转换对象
+     * 反序列化
+     * @return  序列化
      */
-    IConvert<byte[], Invoke> getDeserialization();
+    Convert<byte[], Data> deSerial();
 
 }

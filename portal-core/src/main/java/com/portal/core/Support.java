@@ -6,7 +6,7 @@ package com.portal.core;
  * @author Mrhan
  * @date 2021/6/15 16:47
  */
-public interface ISupport<T> {
+public interface Support<T> {
     /**
      * 子类是否支持 T
      * @param t T

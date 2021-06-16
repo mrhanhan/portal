@@ -2,7 +2,7 @@ package com.portal.core.connect.socket;
 
 import com.portal.core.connect.AbstractCacheConnectionManager;
 import com.portal.core.connect.ConnectMetadata;
-import com.portal.core.connect.IConnection;
+import com.portal.core.connect.Connection;
 import lombok.SneakyThrows;
 
 import java.io.IOException;
@@ -41,7 +41,7 @@ public class ServerSocketConnectionManager extends AbstractCacheConnectionManage
     }
 
     @Override
-    protected IConnection createConnection(ConnectMetadata metadata) throws IOException {
+    protected Connection createConnection(ConnectMetadata metadata) throws IOException {
         SocketConnectMetadata.ServerSocketConnectMetadata serverSocketMetadata = (SocketConnectMetadata.ServerSocketConnectMetadata) metadata;
         return new SocketConnect(socket.accept());
     }

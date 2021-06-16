@@ -1,0 +1,13 @@
+@startuml
+
+bytes -> "(DataHandler)Data": 数据检查项检测数据到数据处理程序
+"(DataHandler)Data" -> Invoker: 处理处理程序，处理完数据，调用Invoker 进行调用
+Invoker -> TypeConvert: 对Data数据进行类型转换，转换为Java对象
+Invoker <- TypeConvert: 返回转换后的Java对象
+Invoker -> Service: 获取需要执行的服务，然后进行调用
+Service -> Invoker: 服务执行完返回结果
+Invoker -> TypeConvert: Object类型转换为Data类型
+Invoker <- TypeConvert: 返回Data类型数据
+Invoker -> "(DataHandler)Byte": 通过数据处理程序把Data转换为 bytes
+"(DataHandler)Byte" -> bytes: 输出bytes
+@enduml

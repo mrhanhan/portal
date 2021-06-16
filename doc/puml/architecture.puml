@@ -1,21 +1,30 @@
 @startuml
 
-card 传送门1 {
-    card 服务1
-    card 消费1
+card Server {
+    card 连接管理器 {
+        card 连接1 {
+            card Session1 {
+                card 临时服务容器1
+            }
+        }
+        card 连接2 {
+            card Session2 {
+                card 临时服务容器2
+            }
+        }
+    }
+
+    card 数据转换 {
+        card 序列化
+        card 反列化
+    }
+
+    card 检查项 {
+        card 连接检查项 {
+
+        }
+    }
+
 }
-
-card 传送门2 {
-    card 服务2
-    card 消费2
-}
-
-cloud 服务注册与发现 {
-
-}
-
-
-
-
 
 @enduml

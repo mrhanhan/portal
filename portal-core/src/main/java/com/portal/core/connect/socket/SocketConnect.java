@@ -1,7 +1,7 @@
 package com.portal.core.connect.socket;
 
 import com.portal.core.connect.AbstractConnect;
-import com.portal.core.connect.IConnection;
+import com.portal.core.connect.Connection;
 import lombok.SneakyThrows;
 
 import java.io.IOException;
@@ -15,7 +15,7 @@ import java.net.Socket;
  * @author Mrhan
  * @date 2021/6/10 11:51
  */
-public class SocketConnect extends AbstractConnect implements IConnection {
+public class SocketConnect extends AbstractConnect implements Connection {
 
     private final Socket socket;
     private final InputStream input;

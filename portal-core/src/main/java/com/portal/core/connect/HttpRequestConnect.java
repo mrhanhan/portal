@@ -10,7 +10,7 @@ import java.io.OutputStream;
  * @author Mrhan
  * @date 2021/6/10 11:52
  */
-public class HttpRequestConnect extends AbstractConnect implements IConnection {
+public class HttpRequestConnect extends AbstractConnect implements Connection {
 
 
     @Override

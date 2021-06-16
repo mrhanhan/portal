@@ -1,7 +1,7 @@
 package com.portal.core.socket1;
 
-import com.portal.core.service.IService;
-import com.portal.core.service.IServiceContainer;
+import com.portal.core.service.Service;
+import com.portal.core.service.ServiceContainer;
 import com.portal.core.service.SimpleServiceContainer;
 import lombok.SneakyThrows;
 import lombok.experimental.Delegate;
@@ -24,7 +24,7 @@ public class Server {
 
     private final int port;
     @Delegate
-    private IServiceContainer container;
+    private ServiceContainer container;
 
     private ServerSocket serverSocket;
 
@@ -69,7 +69,7 @@ public class Server {
         String serverName = new String(cache.toByteArray(), StandardCharsets.UTF_8);
         cache.close();
         // 调用服务
-        IService service = this.getService(serverName);
+        Service service = this.getService(serverName);
         String result = null;
         if (service != null) {
             Object invoke = service.invoke(serverName);

@@ -6,7 +6,7 @@ package com.portal.core.service;
  * @author Mrhan
  * @date 2021/6/10 11:31
  */
-public abstract class AbstractService implements IService{
+public abstract class AbstractService implements Service {
     /**
      * 服务名称
      */
