@@ -1,11 +1,13 @@
-package com.portal.core.server;
+package com.portal.core.server.monitor;
 
 import com.portal.core.connect.Connection;
+import com.portal.core.server.AbstractServer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -25,6 +27,7 @@ public class SimpleDataMonitor implements DataMonitor {
     @Override
     public void run() {
         InputStream input = connection.getInput();
+        OutputStream output = connection.getOutput();
         byte[] data = new byte[512];
         int length = 0;
         try {
@@ -36,14 +39,21 @@ public class SimpleDataMonitor implements DataMonitor {
                 if (length < data.length) {
                     byte[] bytes = cache.toByteArray();
                     cache.reset();
-                    server.onHandler(bytes);
+                    // 调用请求
+                    byte[] result = server.onCall(this, bytes);
+                    // 写入数据
+                    output.write(result);
+                    output.flush();
                 }
             }
         }catch (Exception e) {
             e.printStackTrace();
         }finally {
             status.compareAndSet(true, false);
+            // 移除 检测
+            server.removeDataMonitor(this);
         }
+
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.portal.core;
 
 import com.portal.core.connect.Connection;
+import com.portal.core.server.ConnectionHandler;
+import com.portal.core.server.ProtocolDataHandlerRegister;
 
 /**
  * Service
@@ -8,7 +10,7 @@ import com.portal.core.connect.Connection;
  * @author Mrhan
  * @date 2021/6/15 17:22
  */
-public interface Server {
+public interface Server extends ConnectionHandler<Connection>, ProtocolDataHandlerRegister {
 
 
     /**
@@ -16,12 +18,6 @@ public interface Server {
      * @throws Exception 可能存在启动错误
      */
     void startUp() throws Exception;
-
-    /**
-     * 处理链接
-     * @param connection    处理连接
-     */
-    void handlerConnection(Connection connection);
 
     /**
      * 关闭

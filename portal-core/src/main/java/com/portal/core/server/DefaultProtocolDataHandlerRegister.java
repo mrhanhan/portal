@@ -14,19 +14,19 @@ import java.util.stream.Collectors;
  */
 public class DefaultProtocolDataHandlerRegister implements ProtocolDataHandlerRegister{
 
-    public Set<ProtocolDataHandler> protocolDataHandlerSet;
+    private final Set<ProtocolDataHandler<?>> protocolDataHandlerSet;
 
     public DefaultProtocolDataHandlerRegister() {
         protocolDataHandlerSet = new HashSet<>();
     }
 
     @Override
-    public void register(ProtocolDataHandler dataMonitor) {
+    public void register(ProtocolDataHandler<?> dataMonitor) {
         protocolDataHandlerSet.add(dataMonitor);
     }
 
     @Override
-    public void remove(ProtocolDataHandler dataMonitor) {
+    public void remove(ProtocolDataHandler<?> dataMonitor) {
         protocolDataHandlerSet.remove(dataMonitor);
     }
 
@@ -35,8 +35,8 @@ public class DefaultProtocolDataHandlerRegister implements ProtocolDataHandlerRe
      * @param data  协议数据处理程序
      * @return      协议数据处理程序
      */
-    List<ProtocolDataHandler> getSupportList(byte[] data) {
-        List<ProtocolDataHandler> protocolDataHandlerList = new ArrayList<>(protocolDataHandlerSet);
+    List<ProtocolDataHandler<?>> getSupportList(byte[] data) {
+        List<ProtocolDataHandler<?>> protocolDataHandlerList = new ArrayList<>(protocolDataHandlerSet);
         return protocolDataHandlerList.stream().filter(t -> t.isSupport(data)).collect(Collectors.toList());
     }
 }

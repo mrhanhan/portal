@@ -19,10 +19,4 @@ public interface DataHandlerContext {
      */
     void remove(DataHandler<?, ?> handler);
 
-    /**
-     * 数据处理程序
-     * @param data  数据处理程序
-     * @return      数据处理程序
-     */
-    Object onHandler(Object data);
 }

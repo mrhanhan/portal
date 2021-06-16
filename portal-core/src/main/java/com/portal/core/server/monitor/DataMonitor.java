@@ -1,6 +1,7 @@
-package com.portal.core.server;
+package com.portal.core.server.monitor;
 
 import com.portal.core.connect.Connection;
+import com.portal.core.server.Monitor;
 
 /**
  * DataMonitor
