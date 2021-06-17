@@ -17,6 +17,6 @@ public interface Invoker {
      * @param data  执行调用
      * @return Param
      */
-    Param invoke(Data data);
+    Param invoke(Data<?> data);
 
 }

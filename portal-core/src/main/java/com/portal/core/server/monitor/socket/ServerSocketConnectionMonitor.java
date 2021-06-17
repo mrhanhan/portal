@@ -17,4 +17,8 @@ public class ServerSocketConnectionMonitor extends AbstractConnectionMonitor {
         super(server, new ServerSocketConnectionManager(1720));
     }
 
+    public ServerSocketConnectionMonitor(Portal server, int port) {
+        super(server, new ServerSocketConnectionManager(port));
+    }
+
 }

@@ -22,13 +22,13 @@ public class DefaultProtocolDataHandlerRegister implements ProtocolDataHandlerRe
 
     @Override
     @SuppressWarnings("all")
-    public void registerProtocolDataHandler(ProtocolDataHandler dataMonitor) {
-        protocolDataHandlerSet.add(dataMonitor);
+    public void registerProtocolDataHandler(ProtocolDataHandler protocolDataHandler) {
+        protocolDataHandlerSet.add(protocolDataHandler);
     }
 
     @Override
-    public void removeProtocolDataHandler(ProtocolDataHandler<?> dataMonitor) {
-        protocolDataHandlerSet.remove(dataMonitor);
+    public void removeProtocolDataHandler(ProtocolDataHandler<?> protocolDataHandler) {
+        protocolDataHandlerSet.remove(protocolDataHandler);
     }
 
     /**

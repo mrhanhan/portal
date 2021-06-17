@@ -12,11 +12,11 @@ import com.portal.core.server.send.DefaultResultSend;
 import com.portal.core.server.send.ResultSend;
 import com.portal.core.service.ServiceContainer;
 import com.portal.core.service.SimpleServiceContainer;
+import com.portal.core.utils.NameThreadFactory;
 import lombok.experimental.Delegate;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
  * @author Mrhan
  * @date 2021/6/15 17:47
  */
-public abstract class AbstractPortal implements Portal{
+public abstract class AbstractPortal implements Portal {
 
     @Delegate
     private ServiceContainer simpleServiceContainer;
@@ -41,7 +41,6 @@ public abstract class AbstractPortal implements Portal{
     /**
      * 协议数据处理器
      */
-    @Delegate
     private MultipleProtocolDataHandler multipleProtocolDataHandler;
     /**
      * 连接检查项
@@ -54,7 +53,7 @@ public abstract class AbstractPortal implements Portal{
     /**
      * 调用数据处理器
      */
-    @Delegate
+    @Delegate(types = { DataHandler.class })
     private InvokeDataHandler invokeDataHandler;
     @Delegate
     private DataMonitorRegister dataMonitorRegister;
@@ -189,22 +188,8 @@ public abstract class AbstractPortal implements Portal{
      * @return ExecutorService
      */
     protected ExecutorService createExecutorService() {
-        ThreadFactory factory = (run) -> {
-            Thread thread = new Thread(run);
-            thread.setName("Server ExecutorService");
-            return thread;
-        };
-        return new ThreadPoolExecutor(10, 10, 10, TimeUnit.MINUTES, new ArrayBlockingQueue<>(10), factory);
+        return new ThreadPoolExecutor(10, 10, 10, TimeUnit.MINUTES, new ArrayBlockingQueue<>(10), new NameThreadFactory(getClass().getSimpleName()));
     }
-
-    /**
-     * 创建默认协议数据处理注册程序
-     * @return  DefaultProtocolDataHandlerRegister
-     */
-    protected DefaultProtocolDataHandlerRegister createProtocolDataHandlerRegister() {
-        return new DefaultProtocolDataHandlerRegister();
-    }
-
     /**
      * 创建默认的服务容器
      * @return  服务容器
@@ -218,11 +203,7 @@ public abstract class AbstractPortal implements Portal{
      * @return  调用数据处理程序
      */
     protected InvokeDataHandler createInvokerDataHandler() {
-        InvokeDataHandler invokeDataHandler = new InvokeDataHandler();
-        invokeDataHandler.setInvoker(invoker);
-        invokeDataHandler.setResultSend(resultSend);
-        invokeDataHandler.setProtocolDataHandler(multipleProtocolDataHandler);
-        return invokeDataHandler;
+        return new InvokeDataHandler(multipleProtocolDataHandler, invoker, resultSend);
     }
 
     /**
@@ -230,11 +211,8 @@ public abstract class AbstractPortal implements Portal{
      * @return  ResultSend
      */
     protected ResultSend createResultSend() {
-        return new DefaultResultSend(this);
+        return new DefaultResultSend(multipleProtocolDataHandler, this::handleException);
     }
-
-    /* ========================================================== Invoker ====================================================================== */
-
     /**
      * 创建默认的Invoker
      * @return  Invoker
@@ -247,4 +225,13 @@ public abstract class AbstractPortal implements Portal{
         return new MultipleProtocolDataHandler();
     }
 
+    @Override
+    public void registerProtocolDataHandler(ProtocolDataHandler<?> protocolDataHandler) {
+        multipleProtocolDataHandler.registerProtocolDataHandler(protocolDataHandler);
+    }
+
+    @Override
+    public void removeProtocolDataHandler(ProtocolDataHandler<?> protocolDataHandler) {
+        multipleProtocolDataHandler.registerProtocolDataHandler(protocolDataHandler);
+    }
 }

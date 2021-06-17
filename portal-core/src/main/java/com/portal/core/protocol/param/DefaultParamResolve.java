@@ -51,9 +51,10 @@ public class DefaultParamResolve implements ParamResolve {
     protected Object serialObject(Param param, Type cls) {
         if (param.isQuote()) {
             return null;
-        } else {
+        } else if (param.getData() != null){
             return JSON.parseObject(param.getData(), cls);
         }
+        return null;
     }
 
     /**

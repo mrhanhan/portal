@@ -20,6 +20,7 @@ public class JsonData extends AbstractData<JsonData> {
     @Override
     public JsonData result(Param param) {
         JsonData jsonData = new JsonData();
+        jsonData.setId(getId());
         jsonData.setService(getService());
         jsonData.setServiceId(getServiceId());
         jsonData.setResult(param);

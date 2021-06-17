@@ -27,7 +27,7 @@ public class SocketConnect extends AbstractConnection implements Connection, Con
     private final OutputStream output;
 
     @Getter
-    private SimpleServiceContainer serviceContainer;
+    private final SimpleServiceContainer serviceContainer;
 
 
     @SneakyThrows
@@ -35,6 +35,8 @@ public class SocketConnect extends AbstractConnection implements Connection, Con
         this.socket = socket;
         input = socket.getInputStream();
         output = socket.getOutputStream();
+        serviceContainer = new SimpleServiceContainer();
+        setSession(this);
         setCallingManager(new MapCallingManager());
 
     }

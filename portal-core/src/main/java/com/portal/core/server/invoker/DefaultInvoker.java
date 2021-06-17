@@ -1,8 +1,8 @@
 package com.portal.core.server.invoker;
 
-import com.portal.core.Portal;
 import com.portal.core.protocol.param.DefaultParamResolve;
 import com.portal.core.protocol.param.ParamResolve;
+import com.portal.core.service.ServiceContainer;
 
 /**
  * DefaultInvoker
@@ -12,8 +12,8 @@ import com.portal.core.protocol.param.ParamResolve;
  */
 public class DefaultInvoker extends AbstractInvoker{
 
-    public DefaultInvoker(Portal server) {
-        super(server);
+    public DefaultInvoker(ServiceContainer serviceContainer) {
+        super(serviceContainer);
     }
 
     @Override

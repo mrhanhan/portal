@@ -9,15 +9,15 @@ package com.portal.core.server;
 public interface ProtocolDataHandlerRegister {
     /**
      * 数据检查项处理程序
-     * @param dataMonitor   数据检查项处理程序
+     * @param protocolDataHandler   数据检查项处理程序
      */
-    void registerProtocolDataHandler(ProtocolDataHandler<?> dataMonitor);
+    void registerProtocolDataHandler(ProtocolDataHandler<?> protocolDataHandler);
 
     /**
      * 移除注册
-     * @param dataMonitor   移除注册
+     * @param protocolDataHandler   移除注册
      */
-    void removeProtocolDataHandler(ProtocolDataHandler<?> dataMonitor);
+    void removeProtocolDataHandler(ProtocolDataHandler<?> protocolDataHandler);
 
 
 }

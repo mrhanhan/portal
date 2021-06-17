@@ -1,6 +1,5 @@
 package com.portal.core.server.invoker;
 
-import com.portal.core.Portal;
 import com.portal.core.connect.Connection;
 import com.portal.core.protocol.param.Param;
 import com.portal.core.protocol.param.ParamResolve;
@@ -18,11 +17,11 @@ import java.lang.reflect.Type;
  */
 public abstract class AbstractInvoker implements Invoker {
 
-    private final Portal server;
+    private final ServiceContainer serviceContainer;
     private final ParamResolve resolve;
 
-    public AbstractInvoker(Portal server) {
-        this.server = server;
+    public AbstractInvoker(ServiceContainer serviceContainer) {
+        this.serviceContainer = serviceContainer;
         resolve = getParamResolve();
     }
 
@@ -34,7 +33,7 @@ public abstract class AbstractInvoker implements Invoker {
     protected abstract ParamResolve getParamResolve();
 
     @Override
-    public Param invoke(Data data) {
+    public Param invoke(Data<?> data) {
         // 获取服务
         Service service = getService(data);
         if (service == null) {
@@ -75,11 +74,11 @@ public abstract class AbstractInvoker implements Invoker {
      * @param data Data
      * @return ServiceContainer
      */
-    protected ServiceContainer getServiceContainer(Data data) {
+    protected ServiceContainer getServiceContainer(Data<?> data) {
         if (data.getConnection().getSession() != null) {
             return data.getConnection().getSession().getServiceContainer();
         } else {
-            return server;
+            return serviceContainer;
         }
     }
 
@@ -89,7 +88,7 @@ public abstract class AbstractInvoker implements Invoker {
      * @param data data
      * @return 返回执行的服务
      */
-    protected Service getService(Data data) {
+    protected Service getService(Data<?> data) {
         Connection connection = data.getConnection();
         if (connection.getSession() != null) {
             Service service = connection.getSession().getServiceContainer().getService(data.getService());
@@ -97,6 +96,6 @@ public abstract class AbstractInvoker implements Invoker {
                 return service;
             }
         }
-        return server.getService(data.getService());
+        return serviceContainer.getService(data.getService());
     }
 }

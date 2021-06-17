@@ -7,7 +7,7 @@ import com.portal.core.server.monitor.DataMonitor;
 import com.portal.core.server.send.CallingManager;
 import com.portal.core.server.send.ResultSend;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 
 /**
  * InvokeDataHandler
@@ -15,17 +15,14 @@ import lombok.Setter;
  * @author Mrhan
  * @date 2021/6/17 17:13
  */
+@RequiredArgsConstructor
 public class InvokeDataHandler implements DataHandler{
 
+    public final ProtocolDataHandler<Data<?>> protocolDataHandler;
     @Getter
-    @Setter
-    public ProtocolDataHandler<Data<?>> protocolDataHandler;
+    public final Invoker invoker;
     @Getter
-    @Setter
-    public Invoker invoker;
-    @Getter
-    @Setter
-    public ResultSend resultSend;
+    public final ResultSend resultSend;
 
     @Override
     public void onHandler(DataMonitor monitor, byte[] data) {
