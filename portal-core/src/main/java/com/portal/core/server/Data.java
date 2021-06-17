@@ -12,6 +12,12 @@ import com.portal.core.protocol.param.Param;
  */
 public interface Data {
     /**
+     * 调用ID
+     * @return
+     */
+    String getId();
+
+    /**
      * 获取协议名称
      * @return  获取协议名称
      */
@@ -41,4 +47,10 @@ public interface Data {
      */
     Param[] getParamArray();
 
+
+    /**
+     * 获取结果
+     * @return  结果
+     */
+    Param getResult();
 }

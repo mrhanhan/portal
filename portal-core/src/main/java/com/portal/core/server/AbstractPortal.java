@@ -5,6 +5,8 @@ import com.portal.core.connect.Connection;
 import com.portal.core.protocol.JsonProtocol;
 import com.portal.core.protocol.Protocol;
 import com.portal.core.protocol.SimpleTextProtocol;
+import com.portal.core.protocol.param.Param;
+import com.portal.core.server.invoker.DefaultInvoker;
 import com.portal.core.server.invoker.Invoker;
 import com.portal.core.server.monitor.DataMonitor;
 import com.portal.core.server.monitor.SimpleDataMonitor;
@@ -213,9 +215,14 @@ public abstract class AbstractPortal implements Portal, ProtocolDataHandler<Data
         Data convertToData = serial(dataMonitor, data);
         System.out.println("DATA: " + convertToData);
         // 根据Data进行调用
-//        Param invoke = invoker.invoke(convertToData);
-//        System.out.println("PARAM: " + invoke);
+        Param invoke = invoker.invoke(convertToData);
+        System.out.println("PARAM: " + invoke);
         // TODO 写入调用完的数据
+        try {
+            dataMonitor.getConnection().close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -287,7 +294,9 @@ public abstract class AbstractPortal implements Portal, ProtocolDataHandler<Data
      * 创建默认的Invoker
      * @return  Invoker
      */
-    protected abstract Invoker createInvoker();
+    protected  Invoker createInvoker() {
+        return new DefaultInvoker(this);
+    }
 
     /* ========================================================== ProtocolDataHandler ========================================================== */
 

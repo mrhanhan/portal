@@ -81,6 +81,29 @@ public class ByteVisit {
         return (char) (hi | lo);
     }
 
+    public static byte[] floatToByte(float data)
+    {
+        int intBits = Float.floatToIntBits(data);
+        return intToBytes(intBits);
+    }
+
+    public static byte[] doubleToByte(double data)
+    {
+        long intBits = Double.doubleToLongBits(data);
+        return longToBytes(intBits);
+    }
+
+    public static float byteToFloat(byte[] bytes)
+    {
+        return Float.intBitsToFloat(bytesToInt(bytes));
+    }
+
+    public static double byteToDouble(byte[] bytes)
+    {
+        long l = bytesToLong(bytes);
+        return Double.longBitsToDouble(l);
+    }
+
     public static byte[] join(byte[] ...bytes) {
         int length = 0;
         for (byte[] data : bytes) {

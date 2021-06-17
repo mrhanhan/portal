@@ -2,7 +2,9 @@ package com.portal.core.protocol;
 
 import com.portal.core.connect.Connection;
 import com.portal.core.protocol.param.Param;
+import com.portal.core.server.AbstractData;
 import com.portal.core.server.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * SimpleTextData
@@ -10,29 +12,14 @@ import com.portal.core.server.Data;
  * @author Mrhan
  * @date 2021/6/16 13:43
  */
+@EqualsAndHashCode(callSuper = true)
 @lombok.Data
-public class SimpleTextData implements Data {
-
-    private String service;
-
-    private String serviceId;
-
+public class SimpleTextData extends AbstractData implements Data {
     private Protocol<SimpleTextData>  protocol;
-
-    private Connection connection;
-    /**
-     * 参数数组
-     */
-    private Param[] paramArray;
 
     @Override
     public Protocol<SimpleTextData> getProtocol() {
         return protocol;
-    }
-
-    @Override
-    public Connection getConnection() {
-        return connection;
     }
 
 }

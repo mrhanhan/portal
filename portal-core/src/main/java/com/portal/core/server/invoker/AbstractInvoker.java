@@ -62,8 +62,8 @@ public abstract class AbstractInvoker implements Invoker {
      * @return Object[]
      */
     protected Object[] resolveArguments(Param[] paramArray, Type[] paramTypes) {
-        Object[] args = new Object[paramArray.length];
-        for (int i = 0; i < paramArray.length; i++) {
+        Object[] args = new Object[paramTypes.length];
+        for (int i = 0; i < paramTypes.length; i++) {
             args[i] = resolve.resolve(paramArray[i], paramTypes[i]);
         }
         return args;

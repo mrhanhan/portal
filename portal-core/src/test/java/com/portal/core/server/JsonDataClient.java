@@ -3,6 +3,9 @@ package com.portal.core.server;
 import com.alibaba.fastjson.JSON;
 import com.portal.core.protocol.JsonData;
 import com.portal.core.protocol.JsonProtocol;
+import com.portal.core.protocol.param.DefaultParamResolve;
+import com.portal.core.protocol.param.Param;
+import com.portal.core.service.SimpleServiceContainer;
 import com.portal.core.utils.ByteCache;
 import lombok.SneakyThrows;
 
@@ -28,15 +31,24 @@ public class JsonDataClient {
     }
 
     @SneakyThrows
-    public String call(String serviceName) {
+    public String call(String serviceName, String serviceId, Object ...args) {
         socket = new Socket();
         socket.connect(new InetSocketAddress(port));
         InputStream input = socket.getInputStream();
         OutputStream output = socket.getOutputStream();
 
+        DefaultParamResolve resolve = new DefaultParamResolve();
+        SimpleServiceContainer simpleServiceContainer = new SimpleServiceContainer();
+
+
         JsonData jsonData = new JsonData();
         jsonData.setService(serviceName);
-
+        jsonData.setServiceId(serviceId);
+        Param[] params = new Param[args.length];
+        for (int i = 0; i < args.length; i++) {
+            params[i] = resolve.resolve(args[i], simpleServiceContainer);
+        }
+        jsonData.setParamArray(params);
         ByteCache  cache1 = new ByteCache();
         cache1.write(JsonProtocol.START);
         cache1.write(JSON.toJSONString(jsonData).getBytes(StandardCharsets.UTF_8));

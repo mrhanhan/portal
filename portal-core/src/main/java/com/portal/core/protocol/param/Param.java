@@ -3,6 +3,8 @@ package com.portal.core.protocol.param;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
+
 /**
  * Param
  * 参数
@@ -11,7 +13,7 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-public class Param {
+public class Param implements Serializable {
     /**
      * 参数类型
      */

@@ -1,6 +1,5 @@
 package com.portal.core.server;
 
-import com.portal.core.server.invoker.Invoker;
 import com.portal.core.server.monitor.socket.ServerSocketConnectionMonitor;
 
 import java.util.List;
@@ -26,9 +25,5 @@ public class ServerSocketPortal extends AbstractPortal {
         return new byte[0];
     }
 
-    @Override
-    protected Invoker createInvoker() {
-        return null;
-    }
 
 }
