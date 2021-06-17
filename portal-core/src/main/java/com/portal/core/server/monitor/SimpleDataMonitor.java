@@ -1,7 +1,8 @@
 package com.portal.core.server.monitor;
 
-import com.portal.core.Portal;
 import com.portal.core.connect.Connection;
+import com.portal.core.server.DataHandler;
+import com.portal.core.server.DataMonitorRegister;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -20,7 +21,8 @@ public class SimpleDataMonitor implements DataMonitor {
 
     @Getter
     public final Connection connection;
-    private final Portal server;
+    private final DataHandler dataHandler;
+    private final DataMonitorRegister register;
     private final AtomicBoolean status = new AtomicBoolean(false);
 
     @Override
@@ -39,7 +41,7 @@ public class SimpleDataMonitor implements DataMonitor {
                     byte[] bytes = cache.toByteArray();
                     cache.reset();
                     // 处理数据
-                    server.onHandler(this, bytes);
+                    dataHandler.onHandler(this, bytes);
 
                 }
             }
@@ -48,7 +50,7 @@ public class SimpleDataMonitor implements DataMonitor {
         }finally {
             status.compareAndSet(true, false);
             // 移除 检测
-            server.removeDataMonitor(this);
+            register.removeDataMonitor(this);
         }
 
     }

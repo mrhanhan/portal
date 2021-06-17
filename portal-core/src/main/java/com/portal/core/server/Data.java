@@ -10,7 +10,7 @@ import com.portal.core.protocol.param.Param;
  * @author Mrhan
  * @date 2021/6/15 17:41
  */
-public interface Data {
+public interface Data<T extends Data<?>> {
     /**
      * 调用ID
      * @return
@@ -21,7 +21,7 @@ public interface Data {
      * 获取协议名称
      * @return  获取协议名称
      */
-    Protocol<? extends Data> getProtocol();
+    Protocol<T> getProtocol();
 
     /**
      * 获取连接对象
@@ -46,11 +46,24 @@ public interface Data {
      * @return  获取参数数组
      */
     Param[] getParamArray();
-
-
     /**
      * 获取结果
      * @return  结果
      */
     Param getResult();
+
+    /**
+     * 使用相同协议构建响应数据包
+     * @param param 响应数据
+     * @return  返回响应数据
+     */
+    T result(Param param);
+
+    /**
+     * 是否是响应数据
+     * @return  是否是响应数据
+     */
+    default boolean isResultData() {
+        return getResult() != null;
+    }
 }

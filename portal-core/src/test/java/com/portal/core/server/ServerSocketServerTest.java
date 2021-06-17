@@ -13,11 +13,14 @@ public class ServerSocketServerTest {
     @Data
     public static class UserInfo implements Serializable {
         public String sex;
+        public String 身高;
+        public String 体重;
+
     }
 
     public Object add(String name, int age, UserInfo info) {
         System.out.println("Invoke: " + name + " : " + age + ": " + info);
-        return "Hello";
+        return info;
     }
 
     @SneakyThrows
@@ -43,6 +46,8 @@ public class ServerSocketServerTest {
         JsonDataClient client = new JsonDataClient(1720);
         UserInfo info = new UserInfo();
         info.sex = "女生";
-        System.out.println(client.call("user", "add", "小王", 23, info));
+        info.身高 = "170";
+        info.体重 = "100";
+        System.out.println(client.call("user", "add", "晓雪", 23, info));
     }
 }

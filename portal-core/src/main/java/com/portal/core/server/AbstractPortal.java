@@ -5,18 +5,15 @@ import com.portal.core.connect.Connection;
 import com.portal.core.protocol.JsonProtocol;
 import com.portal.core.protocol.Protocol;
 import com.portal.core.protocol.SimpleTextProtocol;
-import com.portal.core.protocol.param.Param;
 import com.portal.core.server.invoker.DefaultInvoker;
 import com.portal.core.server.invoker.Invoker;
-import com.portal.core.server.monitor.DataMonitor;
 import com.portal.core.server.monitor.SimpleDataMonitor;
+import com.portal.core.server.send.DefaultResultSend;
+import com.portal.core.server.send.ResultSend;
 import com.portal.core.service.ServiceContainer;
 import com.portal.core.service.SimpleServiceContainer;
 import lombok.experimental.Delegate;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadFactory;
@@ -29,34 +26,44 @@ import java.util.concurrent.TimeUnit;
  * @author Mrhan
  * @date 2021/6/15 17:47
  */
-public abstract class AbstractPortal implements Portal, ProtocolDataHandler<Data> {
+public abstract class AbstractPortal implements Portal{
 
-    @Delegate
-    private DefaultProtocolDataHandlerRegister protocolDataHandlerRegister;
     @Delegate
     private ServiceContainer simpleServiceContainer;
-
+    /**
+     * 调用者
+     */
     private Invoker invoker;
     /**
      * 执行服务
      */
     private ExecutorService executorService;
     /**
-     * 数据检测项
+     * 协议数据处理器
      */
-    private final Set<DataMonitor> dataMonitorSet;
+    @Delegate
+    private MultipleProtocolDataHandler multipleProtocolDataHandler;
     /**
      * 连接检查项
      */
     private ConnectionMonitor connectionMonitor;
+    /**
+     * ResultSend
+     */
+    private ResultSend resultSend;
+    /**
+     * 调用数据处理器
+     */
+    @Delegate
+    private InvokeDataHandler invokeDataHandler;
+    @Delegate
+    private DataMonitorRegister dataMonitorRegister;
     /**
      * 状态锁
      */
     private final Object statusLock = new Object();
 
     public AbstractPortal() {
-        // 初始化数据检测箱
-        dataMonitorSet = new HashSet<>();
         try {
             bootstrap();
         } catch (Exception e) {
@@ -71,16 +78,20 @@ public abstract class AbstractPortal implements Portal, ProtocolDataHandler<Data
     protected void bootstrap() {
         // 初始化异步服务
         executorService = createExecutorService();
-        // 初始化，协议注册程序
-        protocolDataHandlerRegister = createProtocolDataHandlerRegister();
         // 初始化服务注册容器
         simpleServiceContainer = createServiceContainer();
+        multipleProtocolDataHandler = createMultipleProtocolDataHandler();
         // 初始化连接检查项
         connectionMonitor = createConnectionMonitor();
+        // 检测器
+        dataMonitorRegister = new SimpleDataMonitorRegister(executorService);
         // 初始化调用者
         invoker = createInvoker();
+        // resultSend
+        resultSend = createResultSend();
+        // 初始化调用数据处理器
+        invokeDataHandler = createInvokerDataHandler();
     }
-
 
     @Override
     public final void startUp() throws Exception {
@@ -98,13 +109,7 @@ public abstract class AbstractPortal implements Portal, ProtocolDataHandler<Data
             handleException(e);
         } finally {
             // 关闭所有检查项
-            dataMonitorSet.forEach((m) -> {
-                try {
-                    m.close();
-                } catch (Exception e) {
-                    handleException(e);
-                }
-            });
+            dataMonitorRegister.close();
             // 关闭连接检查项
             try {
                 connectionMonitor.close();
@@ -143,9 +148,7 @@ public abstract class AbstractPortal implements Portal, ProtocolDataHandler<Data
      *
      * @throws Exception 可能启动会出现移除
      */
-
     protected  void onClose() throws Exception {
-
     }
 
     @Override
@@ -175,57 +178,10 @@ public abstract class AbstractPortal implements Portal, ProtocolDataHandler<Data
         e.printStackTrace();
     }
 
-    /**
-     * 移除数据检查项
-     *
-     * @param monitor 数据检查项
-     */
-    @Override
-    public void removeDataMonitor(DataMonitor monitor) {
-        dataMonitorSet.remove(monitor);
-    }
-
-    /**
-     * 添加数据检查项
-     *
-     * @param monitor 数据检查项
-     */
-    @Override
-    public void registerDataMonitor(DataMonitor monitor) {
-        dataMonitorSet.add(monitor);
-        // 检测检查项，进行检测
-        executorService.submit(monitor);
-    }
-
-
     @Override
     public void onHandler(Connection connection) {
-        registerDataMonitor(new SimpleDataMonitor(connection, this));
+        registerDataMonitor(new SimpleDataMonitor(connection, this, this));
     }
-
-    /**
-     * 调用请求
-     *
-     * @param dataMonitor 数据检测项
-     * @param data        调用的数据
-     * @return 返回调用数据
-     */
-    @Override
-    public void onHandler(DataMonitor dataMonitor, byte[] data) {
-        Data convertToData = serial(dataMonitor, data);
-        System.out.println("DATA: " + convertToData);
-        // 根据Data进行调用
-        Param invoke = invoker.invoke(convertToData);
-        System.out.println("PARAM: " + invoke);
-        // TODO 写入调用完的数据
-        try {
-            dataMonitor.getConnection().close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
 
     /**
      * 创建异步执行服务
@@ -258,34 +214,23 @@ public abstract class AbstractPortal implements Portal, ProtocolDataHandler<Data
     }
 
     /**
-     * 执行协议数据转换器，转换byte => data
-     *
-     * @param dataMonitor 数据检查项
-     * @param supportList 可以使用的数据转换器
-     * @param data        bytes
-     * @return 返回转换后的Data
+     * 创建调用数据处理程序
+     * @return  调用数据处理程序
      */
-    protected  Data executeProtocolDataHandlerToData(DataMonitor dataMonitor, List<ProtocolDataHandler<? extends Data>> supportList, byte[] data) {
-        if (supportList.isEmpty()) {
-            return null;
-        }
-        ProtocolDataHandler dataHandler = supportList.get(0);
-        return dataHandler.serial(dataMonitor, data);
+    protected InvokeDataHandler createInvokerDataHandler() {
+        InvokeDataHandler invokeDataHandler = new InvokeDataHandler();
+        invokeDataHandler.setInvoker(invoker);
+        invokeDataHandler.setResultSend(resultSend);
+        invokeDataHandler.setProtocolDataHandler(multipleProtocolDataHandler);
+        return invokeDataHandler;
     }
 
     /**
-     * 执行协议数据转换器，转换byte => data
-     *
-     * @param supportList 可以使用的数据转换器
-     * @param data        bytes
-     * @return 返回转换后的Data
+     * 创建ResultSend
+     * @return  ResultSend
      */
-    protected byte[] executeProtocolDataHandlerToByte(List<ProtocolDataHandler<? extends Data>> supportList, Data data) {
-        if (supportList.isEmpty()) {
-            return null;
-        }
-        ProtocolDataHandler dataHandler = supportList.get(0);
-        return dataHandler.deSerial(data);
+    protected ResultSend createResultSend() {
+        return new DefaultResultSend(this);
     }
 
     /* ========================================================== Invoker ====================================================================== */
@@ -298,30 +243,8 @@ public abstract class AbstractPortal implements Portal, ProtocolDataHandler<Data
         return new DefaultInvoker(this);
     }
 
-    /* ========================================================== ProtocolDataHandler ========================================================== */
-
-    @Override
-    public boolean isSupport(Data data) {
-        return !protocolDataHandlerRegister.getSupportList(data).isEmpty();
+    protected MultipleProtocolDataHandler createMultipleProtocolDataHandler() {
+        return new MultipleProtocolDataHandler();
     }
 
-    @Override
-    public boolean isSupport(byte[] data) {
-        return !protocolDataHandlerRegister.getSupportList(data).isEmpty();
-    }
-
-    @Override
-    public Data serial(DataMonitor dataMonitor, byte[] data) {
-        return executeProtocolDataHandlerToData(dataMonitor, protocolDataHandlerRegister.getSupportList(data), data);
-    }
-
-    @Override
-    public byte[] deSerial(Data data) {
-        return executeProtocolDataHandlerToByte(protocolDataHandlerRegister.getSupportList(data), data);
-    }
-
-    @Override
-    public Protocol<Data> getProtocol() {
-        return null;
-    }
 }

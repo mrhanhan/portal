@@ -2,8 +2,6 @@ package com.portal.core.server;
 
 import com.portal.core.server.monitor.socket.ServerSocketConnectionMonitor;
 
-import java.util.List;
-
 /**
  * ServerSocketServer
  *
@@ -16,13 +14,6 @@ public class ServerSocketPortal extends AbstractPortal {
     @Override
     protected ConnectionMonitor createConnectionMonitor() {
         return new ServerSocketConnectionMonitor(this);
-    }
-
-
-
-    @Override
-    protected byte[] executeProtocolDataHandlerToByte(List<ProtocolDataHandler<?>> supportList, Data data) {
-        return new byte[0];
     }
 
 

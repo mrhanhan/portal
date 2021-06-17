@@ -1,5 +1,6 @@
 package com.portal.core.protocol;
 
+import com.portal.core.protocol.param.Param;
 import com.portal.core.server.AbstractData;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,8 +13,16 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class JsonData extends AbstractData {
+public class JsonData extends AbstractData<JsonData> {
 
     private Protocol<JsonData>  protocol;
 
+    @Override
+    public JsonData result(Param param) {
+        JsonData jsonData = new JsonData();
+        jsonData.setService(getService());
+        jsonData.setServiceId(getServiceId());
+        jsonData.setResult(param);
+        return jsonData;
+    }
 }

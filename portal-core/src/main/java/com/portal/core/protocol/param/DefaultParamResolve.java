@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 
@@ -19,7 +20,8 @@ import java.util.Collection;
  * @date 2021/6/17 9:52
  */
 public class DefaultParamResolve implements ParamResolve {
-
+    
+    private final Charset defaultCharset = StandardCharsets.UTF_8;
 
     public DefaultParamResolve() {
 
@@ -63,12 +65,12 @@ public class DefaultParamResolve implements ParamResolve {
      */
     protected Object serialString(Param param, Type cls) {
         if (cls == StringBuilder.class) {
-            return new StringBuilder(new String(param.getData(), StandardCharsets.UTF_8));
+            return new StringBuilder(new String(param.getData(), defaultCharset));
         }
         if (cls == StringBuffer.class) {
-            return new StringBuffer(new String(param.getData(), StandardCharsets.UTF_8));
+            return new StringBuffer(new String(param.getData(), defaultCharset));
         }
-        return new String(param.getData(), StandardCharsets.UTF_8);
+        return new String(param.getData(), defaultCharset);
     }
 
     /**
@@ -79,7 +81,7 @@ public class DefaultParamResolve implements ParamResolve {
      * @return 返回cls
      */
     protected Object serialNumber(Param param, Type cls) {
-        String val = new String(param.getData(), StandardCharsets.UTF_8);
+        String val = new String(param.getData(), defaultCharset);
         if (cls == int.class || cls == Integer.class) {
             return Integer.valueOf(val);
         }
@@ -117,6 +119,9 @@ public class DefaultParamResolve implements ParamResolve {
 
     @Override
     public Param resolve(Object obj, ServiceContainer serviceContainer) {
+        if (obj == null) {
+            return new Param().setType(ParamTypeEnum.NULL);
+        }
         // 序列化字符串
         Param result = descNumber(obj);
         if (result != null) {
@@ -268,7 +273,7 @@ public class DefaultParamResolve implements ParamResolve {
         Param param = new Param();
         param.setType(ParamTypeEnum.STRING);
         if (obj instanceof String || obj instanceof StringBuffer || obj instanceof StringBuilder) {
-            return param.setData(obj.toString().getBytes(StandardCharsets.UTF_8));
+            return param.setData(obj.toString().getBytes(defaultCharset));
         }
 
         return null;
@@ -287,35 +292,35 @@ public class DefaultParamResolve implements ParamResolve {
         Class<?> cls = obj.getClass();
 
         if (cls == Integer.class) {
-            return param.setData(obj.toString().getBytes(StandardCharsets.UTF_8));
+            return param.setData(obj.toString().getBytes(defaultCharset));
         }
         if (cls == Long.class) {
-            return param.setData(obj.toString().getBytes(StandardCharsets.UTF_8));
+            return param.setData(obj.toString().getBytes(defaultCharset));
         }
         if (cls == Byte.class) {
-            return param.setData(obj.toString().getBytes(StandardCharsets.UTF_8));
+            return param.setData(obj.toString().getBytes(defaultCharset));
         }
         if (cls == Character.class) {
-            return param.setData(obj.toString().getBytes(StandardCharsets.UTF_8));
+            return param.setData(obj.toString().getBytes(defaultCharset));
         }
         if (cls == Short.class) {
-            return param.setData(obj.toString().getBytes(StandardCharsets.UTF_8));
+            return param.setData(obj.toString().getBytes(defaultCharset));
         }
         //
         if (cls == Float.class) {
-            return param.setData(obj.toString().getBytes(StandardCharsets.UTF_8));
+            return param.setData(obj.toString().getBytes(defaultCharset));
         }
         //
         if (cls == Double.class) {
-            return param.setData(obj.toString().getBytes(StandardCharsets.UTF_8));
+            return param.setData(obj.toString().getBytes(defaultCharset));
         }
         // BigInteger
         if (cls == BigInteger.class) {
-            return param.setData(obj.toString().getBytes(StandardCharsets.UTF_8));
+            return param.setData(obj.toString().getBytes(defaultCharset));
         }
         // BigDecimal
         if (cls == BigDecimal.class) {
-            return param.setData(obj.toString().getBytes(StandardCharsets.UTF_8));
+            return param.setData(obj.toString().getBytes(defaultCharset));
         }
         return null;
     }

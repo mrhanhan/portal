@@ -8,7 +8,7 @@ import com.portal.core.server.monitor.DataMonitor;
  * @author Mrhan
  * @date 2021/6/16 9:24
  */
-public interface DataMonitorRegister{
+public interface DataMonitorRegister extends AutoCloseable{
     /**
      * 数据检查项处理程序
      * @param dataMonitor   数据检查项处理程序

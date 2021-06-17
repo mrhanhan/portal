@@ -14,19 +14,19 @@ import java.util.stream.Collectors;
  */
 public class DefaultProtocolDataHandlerRegister implements ProtocolDataHandlerRegister{
 
-    private final Set<ProtocolDataHandler<? extends Data>> protocolDataHandlerSet;
+    private final Set<ProtocolDataHandler<? extends Data<?>>> protocolDataHandlerSet;
 
     public DefaultProtocolDataHandlerRegister() {
         protocolDataHandlerSet = new HashSet<>();
     }
 
     @Override
-    public void registerProtocolDataHandler(ProtocolDataHandler<? extends Data> dataMonitor) {
+    public void registerProtocolDataHandler(ProtocolDataHandler<?> dataMonitor) {
         protocolDataHandlerSet.add(dataMonitor);
     }
 
     @Override
-    public void removeProtocolDataHandler(ProtocolDataHandler<? extends Data> dataMonitor) {
+    public void removeProtocolDataHandler(ProtocolDataHandler<?> dataMonitor) {
         protocolDataHandlerSet.remove(dataMonitor);
     }
 
@@ -35,8 +35,9 @@ public class DefaultProtocolDataHandlerRegister implements ProtocolDataHandlerRe
      * @param data  协议数据处理程序
      * @return      协议数据处理程序
      */
-    List<ProtocolDataHandler<? extends Data>> getSupportList(byte[] data) {
-        List<ProtocolDataHandler<? extends Data>> protocolDataHandlerList = new ArrayList<>(protocolDataHandlerSet);
+    public List<ProtocolDataHandler<Data<?>>> getSupportList(byte[] data) {
+        List<ProtocolDataHandler<Data<?>>> protocolDataHandlerList = new ArrayList<>();
+        protocolDataHandlerList.addAll(protocolDataHandlerList);
         return protocolDataHandlerList.stream().filter(t -> t.isSupport(data)).collect(Collectors.toList());
     }
 
@@ -45,8 +46,9 @@ public class DefaultProtocolDataHandlerRegister implements ProtocolDataHandlerRe
      * @param data  协议数据处理程序
      * @return      协议数据处理程序
      */
-    List<ProtocolDataHandler<? extends Data>> getSupportList(Data data) {
-        List<ProtocolDataHandler<? extends Data>> protocolDataHandlerList = new ArrayList<>(protocolDataHandlerSet);
+    public List<ProtocolDataHandler<Data<?>>> getSupportList(Data<?> data) {
+        List<ProtocolDataHandler<Data<?>>> protocolDataHandlerList = new ArrayList<>();
+        protocolDataHandlerList.addAll(protocolDataHandlerList);
         return protocolDataHandlerList.stream().filter(t -> t.isSupport(data)).collect(Collectors.toList());
     }
 

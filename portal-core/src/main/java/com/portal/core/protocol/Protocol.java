@@ -13,7 +13,7 @@ import com.portal.core.server.ProtocolDataHandler;
  * @author Mrhan
  * @date 2021/6/9 16:09
  */
-public interface Protocol<T extends Data> {
+public interface Protocol<T extends Data<?>> {
     /**
      * 协议名称
      * @return  返回协议名称

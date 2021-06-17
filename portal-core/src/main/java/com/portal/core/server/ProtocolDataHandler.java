@@ -9,7 +9,7 @@ import com.portal.core.server.monitor.DataMonitor;
  * @author Mrhan
  * @date 2021/6/15 20:28
  */
-public interface ProtocolDataHandler<T extends Data>  {
+public interface ProtocolDataHandler<T extends Data<?>>  {
     /**
      * 获取协议信息
      * @return Protocol
@@ -40,5 +40,5 @@ public interface ProtocolDataHandler<T extends Data>  {
      * @param data  反序列化
      * @return      反序列化
      */
-    boolean isSupport(Data data);
+    boolean isSupport(Data<? extends Data<?>> data);
 }

@@ -1,7 +1,12 @@
 package com.portal.core.connect.socket;
 
-import com.portal.core.connect.AbstractConnect;
+import com.portal.core.connect.AbstractConnection;
 import com.portal.core.connect.Connection;
+import com.portal.core.connect.ConnectionSession;
+import com.portal.core.connect.SessionKey;
+import com.portal.core.server.send.MapCallingManager;
+import com.portal.core.service.SimpleServiceContainer;
+import lombok.Getter;
 import lombok.SneakyThrows;
 
 import java.io.IOException;
@@ -15,17 +20,28 @@ import java.net.Socket;
  * @author Mrhan
  * @date 2021/6/10 11:51
  */
-public class SocketConnect extends AbstractConnect implements Connection {
+public class SocketConnect extends AbstractConnection implements Connection, ConnectionSession {
 
     private final Socket socket;
     private final InputStream input;
     private final OutputStream output;
+
+    @Getter
+    private SimpleServiceContainer serviceContainer;
+
 
     @SneakyThrows
     public SocketConnect(Socket socket) {
         this.socket = socket;
         input = socket.getInputStream();
         output = socket.getOutputStream();
+        setCallingManager(new MapCallingManager());
+
+    }
+
+    @Override
+    public SessionKey getSessionKey() {
+        return null;
     }
 
     @Override

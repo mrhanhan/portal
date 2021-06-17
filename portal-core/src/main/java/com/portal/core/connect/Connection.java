@@ -1,5 +1,7 @@
 package com.portal.core.connect;
 
+import com.portal.core.server.send.CallingManager;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -45,4 +47,9 @@ public interface Connection extends AutoCloseable {
      * @return  是否可用
      */
     boolean isAvailable();
+
+    /**
+     * 调用管理器
+     */
+    CallingManager getCallingManager();
 }

@@ -1,9 +1,7 @@
 package com.portal.core.protocol;
 
-import com.portal.core.connect.Connection;
 import com.portal.core.protocol.param.Param;
 import com.portal.core.server.AbstractData;
-import com.portal.core.server.Data;
 import lombok.EqualsAndHashCode;
 
 /**
@@ -14,12 +12,21 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @lombok.Data
-public class SimpleTextData extends AbstractData implements Data {
+public class SimpleTextData extends AbstractData<SimpleTextData> {
     private Protocol<SimpleTextData>  protocol;
 
     @Override
     public Protocol<SimpleTextData> getProtocol() {
         return protocol;
+    }
+
+    @Override
+    public SimpleTextData result(Param param) {
+        SimpleTextData result = new SimpleTextData();
+        result.setService(getService());
+        result.setServiceId(getServiceId());
+        result.setResult(param);
+        return result;
     }
 
 }

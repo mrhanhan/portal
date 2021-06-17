@@ -1,5 +1,6 @@
 package com.portal.core.connect;
 
+import com.portal.core.server.send.CallingManager;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +10,7 @@ import lombok.Setter;
  * @author Mrhan
  * @date 2021/6/15 16:41
  */
-public abstract class AbstractConnect implements Connection {
+public abstract class AbstractConnection implements Connection {
 
     @Getter
     @Setter
@@ -21,6 +22,10 @@ public abstract class AbstractConnect implements Connection {
     @Getter
     @Setter
     private ConnectionSession session;
+
+    @Getter
+    @Setter
+    private CallingManager callingManager;
 
     @Override
     public boolean isAvailable() {

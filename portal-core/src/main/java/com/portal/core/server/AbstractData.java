@@ -15,7 +15,7 @@ import java.util.UUID;
  */
 @Data
 @Accessors(chain = true)
-public abstract class AbstractData implements com.portal.core.server.Data {
+public abstract class AbstractData<T extends com.portal.core.server.Data<?>> implements com.portal.core.server.Data<T> {
 
     private String id;
 

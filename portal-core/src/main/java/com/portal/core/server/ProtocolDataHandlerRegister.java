@@ -11,13 +11,13 @@ public interface ProtocolDataHandlerRegister {
      * 数据检查项处理程序
      * @param dataMonitor   数据检查项处理程序
      */
-    void registerProtocolDataHandler(ProtocolDataHandler<? extends Data> dataMonitor);
+    void registerProtocolDataHandler(ProtocolDataHandler<?> dataMonitor);
 
     /**
      * 移除注册
      * @param dataMonitor   移除注册
      */
-    void removeProtocolDataHandler(ProtocolDataHandler<? extends Data> dataMonitor);
+    void removeProtocolDataHandler(ProtocolDataHandler<?> dataMonitor);
 
 
 }
