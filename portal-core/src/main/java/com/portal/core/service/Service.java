@@ -1,6 +1,7 @@
 package com.portal.core.service;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 
 /**
  * IService
@@ -23,8 +24,17 @@ public interface Service {
     /**
      * 调用服务
      * @param id    调用ID
-     * @param arg   参数
+     * @param args   参数
      * @return      返回调用的参数
+     * @throws InvocationTargetException  1
+     * @throws IllegalAccessException 2
      */
-    Object invoke(String id, Object ...arg) throws InvocationTargetException, IllegalAccessException;
+    Object invoke(String id, Object ...args) throws InvocationTargetException, IllegalAccessException;
+
+    /**
+     * 返回指定服务ID的方法参数
+     * @param id    服务 ID
+     * @return      返回参数信息
+     */
+    Type[] getParamTypes(String id);
 }

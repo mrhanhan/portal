@@ -1,7 +1,5 @@
 package com.portal.core.server;
 
-import com.portal.core.protocol.Data;
-
 /**
  * ProtocolDataHandlerRegister
  * 数据检查项注册程序

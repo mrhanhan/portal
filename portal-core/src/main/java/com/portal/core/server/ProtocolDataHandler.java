@@ -1,6 +1,5 @@
 package com.portal.core.server;
 
-import com.portal.core.protocol.Data;
 import com.portal.core.protocol.Protocol;
 import com.portal.core.server.monitor.DataMonitor;
 

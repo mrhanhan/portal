@@ -1,7 +1,5 @@
 package com.portal.core.server;
 
-import com.portal.core.protocol.Data;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

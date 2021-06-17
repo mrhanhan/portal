@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
 /**
  * MethodDelegateService
@@ -31,7 +32,12 @@ public class MethodDelegateService extends AbstractService {
 
 
     @Override
-    public Object invoke(String id, Object... arg) throws InvocationTargetException, IllegalAccessException {
-        return method.invoke(getServiceObject(), arg);
+    public Object invoke(String id, Object... args) throws InvocationTargetException, IllegalAccessException {
+        return method.invoke(getServiceObject(), args);
+    }
+
+    @Override
+    public Type[] getParamTypes(String id) {
+        return method.getParameterTypes();
     }
 }

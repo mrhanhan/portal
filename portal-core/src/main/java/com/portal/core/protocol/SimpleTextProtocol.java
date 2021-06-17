@@ -1,5 +1,6 @@
 package com.portal.core.protocol;
 
+import com.portal.core.server.Data;
 import com.portal.core.server.ProtocolDataHandler;
 import com.portal.core.server.monitor.DataMonitor;
 import com.portal.core.utils.ByteCache;
@@ -34,7 +35,7 @@ public class SimpleTextProtocol extends AbstractProtocol<SimpleTextData> impleme
 
     @Override
     public boolean isSupport(Data data) {
-        return data instanceof SimpleTextData;
+        return data.getClass() == SimpleTextData.class;
     }
 
     @Override
@@ -46,7 +47,7 @@ public class SimpleTextProtocol extends AbstractProtocol<SimpleTextData> impleme
     public SimpleTextData serial(DataMonitor dataMonitor, byte[] data) {
         SimpleTextData simpleTextData = new SimpleTextData();
         simpleTextData.setProtocol(this);
-        simpleTextData.setService(new String(data, START.length, data.length, StandardCharsets.UTF_8));
+        simpleTextData.setService(new String(data, START.length, data.length - START.length, StandardCharsets.UTF_8));
         simpleTextData.setConnection(dataMonitor.getConnection());
 
         return simpleTextData;

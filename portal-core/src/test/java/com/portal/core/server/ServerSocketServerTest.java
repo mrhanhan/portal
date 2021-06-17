@@ -1,7 +1,7 @@
 package com.portal.core.server;
 
-import com.portal.core.socket1.Client;
 import lombok.SneakyThrows;
+import org.junit.Test;
 
 public class ServerSocketServerTest {
 
@@ -11,8 +11,14 @@ public class ServerSocketServerTest {
         server.startUp();
     }
 
+    @Test
     public void client() {
         SimpleClient client = new SimpleClient(1720);
         System.out.println(client.call("os"));
+    }
+    @Test
+    public void jsonClient() {
+        JsonDataClient client = new JsonDataClient(1720);
+        System.out.println(client.call("json"));
     }
 }

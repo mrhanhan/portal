@@ -1,5 +1,8 @@
 package com.portal.core.server;
 
+import com.alibaba.fastjson.JSON;
+import com.portal.core.protocol.JsonData;
+import com.portal.core.protocol.JsonProtocol;
 import com.portal.core.utils.ByteCache;
 import lombok.SneakyThrows;
 
@@ -16,11 +19,11 @@ import java.nio.charset.StandardCharsets;
  * @author Mrhan
  * @date 2021/6/15 16:23
  */
-public class SimpleClient {
+public class JsonDataClient {
 
     public Socket socket;
     private final int port;
-    public SimpleClient(int port) {
+    public JsonDataClient(int port) {
         this.port = port;
     }
 
@@ -30,9 +33,13 @@ public class SimpleClient {
         socket.connect(new InetSocketAddress(port));
         InputStream input = socket.getInputStream();
         OutputStream output = socket.getOutputStream();
+
+        JsonData jsonData = new JsonData();
+        jsonData.setService(serviceName);
+
         ByteCache  cache1 = new ByteCache();
-        cache1.write(new byte[]{115, 105, 109, 112, 108, 101});
-        cache1.write(serviceName.getBytes(StandardCharsets.UTF_8));
+        cache1.write(JsonProtocol.START);
+        cache1.write(JSON.toJSONString(jsonData).getBytes(StandardCharsets.UTF_8));
         output.write(cache1.toByteArray());
         ByteArrayOutputStream cache = new ByteArrayOutputStream();
         byte[] data = new byte[512];

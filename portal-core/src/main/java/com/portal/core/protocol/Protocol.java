@@ -1,5 +1,6 @@
 package com.portal.core.protocol;
 
+import com.portal.core.server.Data;
 import com.portal.core.server.ProtocolDataHandler;
 
 /**

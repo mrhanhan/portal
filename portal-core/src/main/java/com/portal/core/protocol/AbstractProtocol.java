@@ -1,5 +1,6 @@
 package com.portal.core.protocol;
 
+import com.portal.core.server.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
