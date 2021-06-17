@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 @Getter
-public abstract class AbstractProtocol<T extends Data> implements Protocol<T> {
+public abstract class AbstractProtocol<T extends Data<?>> implements Protocol<T> {
 
 
     private final String name;

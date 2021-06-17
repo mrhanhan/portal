@@ -33,7 +33,9 @@ public class SimpleClient {
         ByteCache  cache1 = new ByteCache();
         cache1.write(new byte[]{115, 105, 109, 112, 108, 101});
         cache1.write(serviceName.getBytes(StandardCharsets.UTF_8));
-        output.write(cache1.toByteArray());
+
+        cache1.writeTo(output);
+
         ByteArrayOutputStream cache = new ByteArrayOutputStream();
         byte[] data = new byte[512];
         int length;

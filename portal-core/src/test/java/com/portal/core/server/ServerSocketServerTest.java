@@ -49,5 +49,6 @@ public class ServerSocketServerTest {
         info.身高 = "170";
         info.体重 = "100";
         System.out.println(client.call("user", "add", "晓雪", 23, info));
+        System.out.println(client.call("user", "add", "晓雪", 23, info));
     }
 }

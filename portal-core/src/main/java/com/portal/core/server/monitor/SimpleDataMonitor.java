@@ -36,6 +36,9 @@ public class SimpleDataMonitor implements DataMonitor {
             //这里的是需要判断是否瞒著于
             while (status.get() && connection.isAvailable()) {
                 length = input.read(data);
+                if (length == -1) {
+                    break;
+                }
                 cache.write(data, 0, length);
                 if (length < data.length) {
                     byte[] bytes = cache.toByteArray();

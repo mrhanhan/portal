@@ -14,14 +14,15 @@ import java.util.stream.Collectors;
  */
 public class DefaultProtocolDataHandlerRegister implements ProtocolDataHandlerRegister{
 
-    private final Set<ProtocolDataHandler<? extends Data<?>>> protocolDataHandlerSet;
+    private final Set<ProtocolDataHandler<Data<?>>> protocolDataHandlerSet;
 
     public DefaultProtocolDataHandlerRegister() {
         protocolDataHandlerSet = new HashSet<>();
     }
 
     @Override
-    public void registerProtocolDataHandler(ProtocolDataHandler<?> dataMonitor) {
+    @SuppressWarnings("all")
+    public void registerProtocolDataHandler(ProtocolDataHandler dataMonitor) {
         protocolDataHandlerSet.add(dataMonitor);
     }
 
@@ -36,8 +37,7 @@ public class DefaultProtocolDataHandlerRegister implements ProtocolDataHandlerRe
      * @return      协议数据处理程序
      */
     public List<ProtocolDataHandler<Data<?>>> getSupportList(byte[] data) {
-        List<ProtocolDataHandler<Data<?>>> protocolDataHandlerList = new ArrayList<>();
-        protocolDataHandlerList.addAll(protocolDataHandlerList);
+        List<ProtocolDataHandler<Data<?>>> protocolDataHandlerList = new ArrayList<>(protocolDataHandlerSet);
         return protocolDataHandlerList.stream().filter(t -> t.isSupport(data)).collect(Collectors.toList());
     }
 
@@ -47,8 +47,7 @@ public class DefaultProtocolDataHandlerRegister implements ProtocolDataHandlerRe
      * @return      协议数据处理程序
      */
     public List<ProtocolDataHandler<Data<?>>> getSupportList(Data<?> data) {
-        List<ProtocolDataHandler<Data<?>>> protocolDataHandlerList = new ArrayList<>();
-        protocolDataHandlerList.addAll(protocolDataHandlerList);
+        List<ProtocolDataHandler<Data<?>>> protocolDataHandlerList = new ArrayList<>(protocolDataHandlerSet);
         return protocolDataHandlerList.stream().filter(t -> t.isSupport(data)).collect(Collectors.toList());
     }
 
