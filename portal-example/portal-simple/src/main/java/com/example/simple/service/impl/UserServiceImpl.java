@@ -12,7 +12,10 @@ import com.example.simple.service.UserService;
 public class UserServiceImpl implements UserService {
     @Override
     public User login(User user) {
-        System.out.println("登录服务");
+        user.setMoney(1000000);
+        user.setOrder(1000000);
+        user.setRole("超管");
+        user.setAccount("微信账户");
         return user;
     }
 }

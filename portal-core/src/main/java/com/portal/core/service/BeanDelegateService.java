@@ -29,6 +29,11 @@ public class BeanDelegateService extends AbstractService{
         return this;
     }
 
+    public BeanDelegateService register(String methodName, Method method){
+        serviceIdMethodMap.put(methodName, method);
+        return this;
+    }
+
     @Override
     public Object invoke(String id, Object... args) throws InvocationTargetException, IllegalAccessException {
         Method method = null;

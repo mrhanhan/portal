@@ -22,4 +22,11 @@ public class User implements Serializable {
      * 密码
      */
     private String password;
+
+    private String account;
+
+    private String role;
+
+    private int money;
+    private int order;
 }

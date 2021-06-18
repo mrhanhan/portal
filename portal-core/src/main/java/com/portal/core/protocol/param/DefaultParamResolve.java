@@ -1,16 +1,22 @@
 package com.portal.core.protocol.param;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.portal.core.service.BeanDelegateService;
 import com.portal.core.service.ServiceContainer;
 import com.portal.core.utils.ByteVisit;
+import com.portal.core.utils.MethodUtil;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * DefaultParamResolve
@@ -35,11 +41,36 @@ public class DefaultParamResolve implements ParamResolve {
                 return (T) serialNumber(param, cls);
             case STRING:
                 return (T) serialString(param, cls);
+            case ARRAY:
+                return (T) serialArray(param, cls);
             case OBJECT:
                 return (T) serialObject(param, cls);
             default:
                 return null;
         }
+    }
+
+    /**
+     * 序列化数组
+     * @param param 擦描述及
+     * @param cls   数组类型
+     * @return      返回对象
+     */
+    protected Object serialArray(Param param, Type cls) {
+        Class<?> c = (Class<?>) cls;
+        if (Collection.class.isAssignableFrom(c)) {
+
+        } else if (c.isArray()) {
+            Class<?> componentType = c.getComponentType();
+            JSONArray array = new JSONArray();
+            if (param.getChildren() != null) {
+                for (Param child : param.getChildren()) {
+                    array.add(JSON.toJSON(resolve(child, componentType)));
+                }
+            }
+            return array.toJavaObject(cls);
+        }
+        return null;
     }
 
     /***
@@ -50,6 +81,9 @@ public class DefaultParamResolve implements ParamResolve {
      */
     protected Object serialObject(Param param, Type cls) {
         if (param.isQuote()) {
+            // 如果是引用对象
+            String serviceName = param.getQuoteService();
+
             return null;
         } else if (param.getData() != null){
             return JSON.parseObject(param.getData(), cls);
@@ -158,7 +192,17 @@ public class DefaultParamResolve implements ParamResolve {
         param.setType(ParamTypeEnum.OBJECT);
         // 判断是否是 需要传递引用对象
         if (checkQuote(obj)) {
-
+            // 注册引用对象服务
+            String tempServiceName = UUID.randomUUID().toString();
+            // 注册服务
+            BeanDelegateService service = new BeanDelegateService(tempServiceName, obj, obj.getClass());
+            List<Method> allMethod = MethodUtil.getAllMethod(obj.getClass());
+            for (Method method : allMethod) {
+                service.register(method.getName(), method);
+            }
+            serviceContainer.register(service);
+            param.setQuoteService(tempServiceName);
+            param.setQuote(true);
         } else {
             param.setData(JSON.toJSONBytes(obj));
         }

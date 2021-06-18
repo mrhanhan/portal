@@ -31,10 +31,6 @@ public class Param implements Serializable {
      */
     private String quoteService;
     /**
-     * 引用的服务ID信息
-     */
-    private String quoteServiceId;
-    /**
      * 如果是数组参数，数组内部的元素信息
      */
     private Param[] children;

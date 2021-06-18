@@ -22,6 +22,11 @@
 
 
     <dependencies>
+        <!-- CGLIB -->
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+        </dependency>
         <!--JSON-->
         <dependency>
             <groupId>com.alibaba</groupId>

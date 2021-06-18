@@ -111,7 +111,6 @@ public class SimpleDataMonitor implements DataMonitor {
                         // 开始检测
                         if (ByteVisit.equ(detectionDataCache, START)) {
                             dataLength = ByteVisit.bytesToInt(ByteVisit.get(detectionDataCache, START.length, 4));
-                            System.out.println("检测到数据: " + dataLength);
                             dataPosition = 0;
                             mode = true;
                         }
@@ -138,6 +137,7 @@ public class SimpleDataMonitor implements DataMonitor {
         try {
             dataHandler.onHandler(this, bytes);
         }catch (Exception e){
+            System.out.println(new String(bytes));
             exceptionHandler.onException(e);
         }
     }

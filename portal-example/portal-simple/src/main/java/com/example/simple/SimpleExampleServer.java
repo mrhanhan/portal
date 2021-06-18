@@ -18,8 +18,9 @@ public class SimpleExampleServer extends ServerSocketPortal {
     protected void onStart() throws Exception {
         super.onStart();
         // 注册服务
-        register(new BeanDelegateService("userService", new UserServiceImpl(), UserService.class)
-                         .register("login", User.class));
+        BeanDelegateService service = new BeanDelegateService("userService", new UserServiceImpl(), UserService.class);
+        service.register("login", User.class);
+        register(service);
     }
     public static void main(String[] args) {
         try {

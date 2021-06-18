@@ -188,7 +188,7 @@ public abstract class AbstractPortal implements Portal {
      * @return ExecutorService
      */
     protected ExecutorService createExecutorService() {
-        return new ThreadPoolExecutor(10, 10, 10, TimeUnit.MINUTES, new ArrayBlockingQueue<>(10), new NameThreadFactory(getClass().getSimpleName()));
+        return new ThreadPoolExecutor(100, 10000, 10, TimeUnit.SECONDS, new ArrayBlockingQueue<>(10000), new NameThreadFactory(getClass().getSimpleName()));
     }
     /**
      * 创建默认的服务容器
