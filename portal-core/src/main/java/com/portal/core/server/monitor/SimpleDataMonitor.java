@@ -114,7 +114,6 @@ public class SimpleDataMonitor implements DataMonitor {
                         readPosition += laseNeedDetectionLength;
                         // 开始检测
                         if (ByteVisit.equ(detectionDataCache, START)) {
-                            detectionDataCache = null;
                             dataLength = ByteVisit.bytesToInt(ByteVisit.get(detectionDataCache, START.length, 4));
                             System.out.println("检测到数据: " + dataLength);
                             dataPosition = 0;
