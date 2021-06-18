@@ -15,4 +15,11 @@ public interface DataMonitor extends Monitor {
      * @return  返回检测的连接西信息
      */
     Connection getConnection();
+
+    /**
+     * 数据监听器打包数据
+     * @param data  打包完的数据进行发送以便监听器可以方便的监听
+     * @return  打包数据
+     */
+    byte[] bale(byte[] data);
 }

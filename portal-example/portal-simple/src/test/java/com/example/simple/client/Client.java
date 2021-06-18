@@ -33,12 +33,25 @@ public class Client {
         data.setParamArray(new Param[]{
                 resolve.resolve(new User().setUsername("admin").setPassword("123456"), connection.getSession().getServiceContainer())
         });
-        long time = System.currentTimeMillis();
-        System.out.println(time);
+
+//        for (int i = 0; i < 10; i++) {
+//            JsonData data1 = new JsonData();
+//            data1.setService("userService");
+//            data1.setServiceId("login");
+//            data1.setParamArray(data.getParamArray());
+//            long time = System.currentTimeMillis();
+//            defaultInvokeSend.invokeSend(data1, connection, (param -> {
+//                User user = resolve.resolve(param, User.class);
+//                System.out.println("响应：" + user);
+//                System.out.println("耗时:" + (System.currentTimeMillis() - time));
+//            }));
+//        }
+        Thread.sleep(100);
+        long time1 = System.currentTimeMillis();
         defaultInvokeSend.invokeSend(data, connection, (param -> {
             User user = resolve.resolve(param, User.class);
             System.out.println("响应：" + user);
-            System.out.println(System.currentTimeMillis() - time);
+            System.out.println(System.currentTimeMillis() - time1);
             try {
                 connection.close();
                 defaultInvokeSend.close();

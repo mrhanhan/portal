@@ -58,22 +58,17 @@ public class DefaultInvokeSend implements InvokeSend {
 
     @Override
     public void invokeSend(Data<?> data, Connection connection, Consumer<Param> resultConsumer) throws IOException {
-        long time = System.currentTimeMillis();
-
         // 序列化数据
         byte[] bytes = multipleProtocolDataHandler.deSerial(data);
-        System.out.println("1 " + (System.currentTimeMillis() - time));
         Invoker invoker = new DefaultInvoker(connection.getSession().getServiceContainer());
         InvokeDataHandler invokeDataHandler = new InvokeDataHandler(multipleProtocolDataHandler, invoker, resultSend);
-        System.out.println("2 " + (System.currentTimeMillis() - time));
         // 注册监听器
-        registerDataMonitor(new SimpleDataMonitor(connection, invokeDataHandler, dataMonitorRegister));
-        System.out.println("3 " + (System.currentTimeMillis() - time));
+        SimpleDataMonitor simpleDataMonitor = new SimpleDataMonitor(connection, invokeDataHandler, dataMonitorRegister);
+        registerDataMonitor(simpleDataMonitor);
         // 注册等待
         connection.getCallingManager().push(data.getService(), data.getServiceId(), data.getId(), resultConsumer);
         //  发送数据
-        sendData(connection, bytes);
-        System.out.println(System.currentTimeMillis() - time);
+        sendData(connection, simpleDataMonitor.bale(bytes));
     }
 
     /**
@@ -90,7 +85,7 @@ public class DefaultInvokeSend implements InvokeSend {
 
 
     protected ExecutorService createExecutorService() {
-        return new ThreadPoolExecutor(3, 3, 1, TimeUnit.MINUTES, new ArrayBlockingQueue<>(3), new NameThreadFactory("DefaultInvokeSend"));
+        return new ThreadPoolExecutor(10, 100, 10, TimeUnit.MINUTES, new ArrayBlockingQueue<>(3), new NameThreadFactory("DefaultInvokeSend"));
     }
 
 

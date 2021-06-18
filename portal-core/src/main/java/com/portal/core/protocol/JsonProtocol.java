@@ -34,11 +34,10 @@ public class JsonProtocol extends AbstractProtocol<JsonData> implements Protocol
 
     @Override
     public JsonData serial(DataMonitor dataMonitor, byte[] data) {
-
-        JsonData jsonData = JSONObject.parseObject(new String(data, START.length, data.length - START.length), JsonData.class);
+        String jsonString = new String(data, START.length, data.length - START.length);
+        JsonData jsonData = JSONObject.parseObject(jsonString, JsonData.class);
         jsonData.setProtocol(this);
         jsonData.setConnection(dataMonitor.getConnection());
-
         return jsonData;
     }
 

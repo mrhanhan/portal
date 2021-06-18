@@ -21,7 +21,17 @@ public class ByteVisit {
      * @return 开始位置对比
      */
     public boolean equ(byte[] bytes, byte... data) {
-        int start = 0;
+        return equ(0, bytes, data);
+    }
+
+    /**
+     * 开始位置
+     *
+     * @param bytes 对于数据
+     * @param data  开始位置
+     * @return 开始位置对比
+     */
+    public boolean equ(int start, byte[] bytes, byte... data) {
         for (byte d : data) {
             if (bytes[start++] != d) {
                 return false;
@@ -117,5 +127,13 @@ public class ByteVisit {
             }
         }
         return result;
+    }
+
+    public static byte[] get(byte[] source, int start, int length) {
+        byte[] data = new byte[length];
+        for (int i = 0; i < length; i++) {
+            data[i] = source[start + i];
+        }
+        return data;
     }
 }

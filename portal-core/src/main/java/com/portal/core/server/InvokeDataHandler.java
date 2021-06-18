@@ -28,6 +28,9 @@ public class InvokeDataHandler implements DataHandler{
     public void onHandler(DataMonitor monitor, byte[] data) {
         // 处理请求，或者处理响应
         Data<? extends Data<?>> convertToData = protocolDataHandler.serial(monitor, data);
+        if (convertToData == null) {
+            return;
+        }
         // 是否是响应数据
         if (convertToData.isResultData()) {
             // 响应调用
@@ -39,7 +42,7 @@ public class InvokeDataHandler implements DataHandler{
         // 进行响应
         Data<?> result = convertToData.result(invoke);
         // 写入响应数据
-        resultSend.resultSend(result, monitor.getConnection(), result.getProtocol());
+        resultSend.resultSend(result, monitor.getConnection(), monitor);
     }
 
     /**

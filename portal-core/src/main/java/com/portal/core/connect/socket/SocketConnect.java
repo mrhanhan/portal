@@ -65,7 +65,7 @@ public class SocketConnect extends AbstractConnection implements Connection, Con
 
     @Override
     public boolean isAvailable() {
-        return socket.isConnected();
+        return !socket.isClosed();
     }
 
     @Override
