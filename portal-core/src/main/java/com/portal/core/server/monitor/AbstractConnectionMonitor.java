@@ -40,11 +40,11 @@ public abstract class AbstractConnectionMonitor implements ConnectionMonitor {
                 try {
                     close();
                 } catch (Exception exception) {
-                    server.handleException(exception);
+                    server.onException(exception);
                 }
                 break;
             } catch (Exception e) {
-                server.handleException(e);
+                server.onException(e);
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.portal.core.server.send;
 
+import com.portal.core.ExceptionHandler;
 import com.portal.core.connect.Connection;
 import com.portal.core.server.Data;
 import com.portal.core.server.ProtocolDataHandler;
@@ -8,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.function.Consumer;
 
 /**
  * DefaultResultSend
@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 public class DefaultResultSend implements ResultSend {
 
     private final ProtocolDataHandler<Data<?>> protocolDataHandler;
-    private final Consumer<Exception> exceptionHandler;
+    private final ExceptionHandler exceptionHandler;
     @Override
     public void resultSend(Data<?> data, Connection connection, DataMonitor monitor) {
         // 反序列化
@@ -30,7 +30,7 @@ public class DefaultResultSend implements ResultSend {
             output.write(monitor.bale(bytes));
             output.flush();
         } catch (IOException e) {
-            exceptionHandler.accept(e);
+            exceptionHandler.onException(e);
         }
     }
 }

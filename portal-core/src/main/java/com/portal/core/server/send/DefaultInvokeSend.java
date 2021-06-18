@@ -1,5 +1,6 @@
 package com.portal.core.server.send;
 
+import com.portal.core.ExceptionHandler;
 import com.portal.core.connect.Connection;
 import com.portal.core.protocol.JsonProtocol;
 import com.portal.core.protocol.param.Param;
@@ -9,9 +10,10 @@ import com.portal.core.server.InvokeDataHandler;
 import com.portal.core.server.MultipleProtocolDataHandler;
 import com.portal.core.server.SimpleDataMonitorRegister;
 import com.portal.core.server.invoker.DefaultInvoker;
-import com.portal.core.server.invoker.Invoker;
 import com.portal.core.server.monitor.DataMonitor;
 import com.portal.core.server.monitor.SimpleDataMonitor;
+import com.portal.core.service.Service;
+import com.portal.core.service.ServiceContainer;
 import com.portal.core.utils.NameThreadFactory;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,7 +32,7 @@ import java.util.function.Consumer;
  * @author Mrhan
  * @date 2021/6/17 17:49
  */
-public class DefaultInvokeSend implements InvokeSend {
+public class DefaultInvokeSend extends DefaultInvoker implements InvokeSend, ExceptionHandler {
 
     private final ExecutorService executorService;
 
@@ -46,13 +48,19 @@ public class DefaultInvokeSend implements InvokeSend {
     @Getter
     private ResultSend resultSend;
 
+    @Setter
+    @Getter
+    private InvokeDataHandler invokeDataHandler ;
+
     public DefaultInvokeSend() {
+        super(null);
         executorService = createExecutorService();
         dataMonitorRegister = new SimpleDataMonitorRegister(executorService);
         multipleProtocolDataHandler = new MultipleProtocolDataHandler();
         // 注册协议
         multipleProtocolDataHandler.registerProtocolDataHandler(new JsonProtocol().getProtocolDataHandler());
-        resultSend = new DefaultResultSend(multipleProtocolDataHandler, (e) -> e.printStackTrace());
+        resultSend = new DefaultResultSend(multipleProtocolDataHandler, this);
+        invokeDataHandler = new InvokeDataHandler(multipleProtocolDataHandler, this, resultSend);
     }
 
 
@@ -60,10 +68,8 @@ public class DefaultInvokeSend implements InvokeSend {
     public void invokeSend(Data<?> data, Connection connection, Consumer<Param> resultConsumer) throws IOException {
         // 序列化数据
         byte[] bytes = multipleProtocolDataHandler.deSerial(data);
-        Invoker invoker = new DefaultInvoker(connection.getSession().getServiceContainer());
-        InvokeDataHandler invokeDataHandler = new InvokeDataHandler(multipleProtocolDataHandler, invoker, resultSend);
         // 注册监听器
-        SimpleDataMonitor simpleDataMonitor = new SimpleDataMonitor(connection, invokeDataHandler, dataMonitorRegister);
+        SimpleDataMonitor simpleDataMonitor = new SimpleDataMonitor(connection, invokeDataHandler, dataMonitorRegister, this);
         registerDataMonitor(simpleDataMonitor);
         // 注册等待
         connection.getCallingManager().push(data.getService(), data.getServiceId(), data.getId(), resultConsumer);
@@ -102,5 +108,20 @@ public class DefaultInvokeSend implements InvokeSend {
     @Override
     public void close() throws Exception {
         dataMonitorRegister.close();
+    }
+
+    @Override
+    public void onException(Exception e) {
+        e.printStackTrace();
+    }
+
+    @Override
+    protected Service getService(Data<?> data) {
+        return getServiceContainer(data).getService(data.getService());
+    }
+
+    @Override
+    protected ServiceContainer getServiceContainer(Data<?> data) {
+        return data.getConnection().getSession().getServiceContainer();
     }
 }

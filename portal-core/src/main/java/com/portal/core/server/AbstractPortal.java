@@ -66,7 +66,7 @@ public abstract class AbstractPortal implements Portal {
         try {
             bootstrap();
         } catch (Exception e) {
-            handleException(e);
+            onException(e);
         }
     }
 
@@ -105,7 +105,7 @@ public abstract class AbstractPortal implements Portal {
         try {
             onClose();
         } catch (Exception e) {
-            handleException(e);
+            onException(e);
         } finally {
             // 关闭所有检查项
             dataMonitorRegister.close();
@@ -113,13 +113,13 @@ public abstract class AbstractPortal implements Portal {
             try {
                 connectionMonitor.close();
             } catch (Exception e) {
-                handleException(e);
+                onException(e);
             } finally {
                 try {
                     // 关闭服务
                     executorService.shutdownNow();
                 } catch (Exception e) {
-                    handleException(e);
+                    onException(e);
                 }
             }
         }
@@ -173,13 +173,13 @@ public abstract class AbstractPortal implements Portal {
     protected abstract ConnectionMonitor createConnectionMonitor();
 
     @Override
-    public void handleException(Exception e) {
+    public void onException(Exception e) {
         e.printStackTrace();
     }
 
     @Override
     public void onHandler(Connection connection) {
-        registerDataMonitor(new SimpleDataMonitor(connection, this, this));
+        registerDataMonitor(new SimpleDataMonitor(connection, this, this, this));
     }
 
     /**
@@ -211,7 +211,7 @@ public abstract class AbstractPortal implements Portal {
      * @return  ResultSend
      */
     protected ResultSend createResultSend() {
-        return new DefaultResultSend(multipleProtocolDataHandler, this::handleException);
+        return new DefaultResultSend(multipleProtocolDataHandler, this);
     }
     /**
      * 创建默认的Invoker

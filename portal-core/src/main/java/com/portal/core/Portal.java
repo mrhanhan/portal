@@ -14,7 +14,7 @@ import com.portal.core.service.ServiceContainer;
  * @author Mrhan
  * @date 2021/6/15 17:22
  */
-public interface Portal extends ConnectionHandler<Connection>, ProtocolDataHandlerRegister, DataHandler, DataMonitorRegister, ServiceContainer {
+public interface Portal extends ConnectionHandler<Connection>, ProtocolDataHandlerRegister, DataHandler, DataMonitorRegister, ServiceContainer, ExceptionHandler {
 
     /**
      * 添加一些
@@ -33,10 +33,5 @@ public interface Portal extends ConnectionHandler<Connection>, ProtocolDataHandl
      */
     void shutDown();
 
-    /**
-     * 统一异常处理
-     * @param e 异常处理
-     */
-    void handleException(Exception e);
 
 }

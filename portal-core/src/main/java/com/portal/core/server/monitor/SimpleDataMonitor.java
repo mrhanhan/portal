@@ -1,18 +1,17 @@
 package com.portal.core.server.monitor;
 
+import com.portal.core.ExceptionHandler;
 import com.portal.core.connect.Connection;
 import com.portal.core.server.DataHandler;
 import com.portal.core.server.DataMonitorRegister;
 import com.portal.core.utils.ByteVisit;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Consumer;
 
 /**
  * IConnectionMonitor
@@ -25,14 +24,11 @@ import java.util.function.Consumer;
 public class SimpleDataMonitor implements DataMonitor {
 
     public static final byte[] START = ByteVisit.intToBytes(0xAABB);
-    @Setter
-    public Consumer<Exception> exceptionHandler = (e) -> {
-        e.printStackTrace();
-    };
     @Getter
     public final Connection connection;
     private final DataHandler dataHandler;
     private final DataMonitorRegister register;
+    public final ExceptionHandler exceptionHandler;
     private final AtomicBoolean status = new AtomicBoolean(false);
 
     /**
@@ -142,7 +138,7 @@ public class SimpleDataMonitor implements DataMonitor {
         try {
             dataHandler.onHandler(this, bytes);
         }catch (Exception e){
-            exceptionHandler.accept(e);
+            exceptionHandler.onException(e);
         }
     }
 
