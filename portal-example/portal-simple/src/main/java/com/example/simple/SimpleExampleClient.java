@@ -18,9 +18,7 @@ public class SimpleExampleClient {
         ClientSocketConnectionManager manager = new ClientSocketConnectionManager();
         ServiceDiscovery discovery = new DefaultServiceDiscovery(manager, (c) -> SocketConnectMetadata.createSocketMetadata("localhost", 1720));
         UserService userService = discovery.getService("userService", UserService.class);
-        for (int i = 0; i < 10; i++) {
-            System.out.println(userService.getUserInfo((long) i));
-        }
+        System.out.println(userService.getUserInfo(1L));
         discovery.close();
         System.exit(0);
     }

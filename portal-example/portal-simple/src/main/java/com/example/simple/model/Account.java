@@ -3,6 +3,8 @@ package com.example.simple.model;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
+
 /**
  * Account
  *
@@ -11,7 +13,7 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-public class Account {
+public class Account implements Serializable {
 
     private String type;
     private String number;
