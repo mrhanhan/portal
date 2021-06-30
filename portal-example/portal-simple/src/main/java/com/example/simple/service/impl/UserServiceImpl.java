@@ -30,6 +30,7 @@ public class UserServiceImpl implements UserService {
         user.setOrder(Math.toIntExact(id));
         user.setRole("超管");
         user.setAccount("微信账户");
+        System.out.println("服务被调用-" + count);
         return user;
     }
 }
