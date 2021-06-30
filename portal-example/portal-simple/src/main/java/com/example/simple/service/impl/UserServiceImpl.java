@@ -1,7 +1,13 @@
 package com.example.simple.service.impl;
 
+import com.example.simple.model.Account;
 import com.example.simple.model.User;
+import com.example.simple.service.AccountService;
 import com.example.simple.service.UserService;
+import com.portal.core.connect.socket.ClientSocketConnectionManager;
+import com.portal.core.connect.socket.SocketConnectMetadata;
+import com.portal.core.discovery.DefaultServiceDiscovery;
+import com.portal.core.discovery.ServiceDiscovery;
 
 /**
  * UserServiceImpl
@@ -12,12 +18,21 @@ import com.example.simple.service.UserService;
 public class UserServiceImpl implements UserService {
 
     private int count = 0;
+
+    private AccountService accountService;
+
+    public UserServiceImpl() {
+        ClientSocketConnectionManager manager = new ClientSocketConnectionManager();
+        ServiceDiscovery discovery = new DefaultServiceDiscovery(manager, (c) -> SocketConnectMetadata.createSocketMetadata("localhost", 1721));
+        // 发现账户服务
+        accountService = discovery.getService("accountService", AccountService.class);
+    }
+
     @Override
     public User login(User user) {
         user.setMoney(1000000);
         user.setOrder(1000000);
         user.setRole("超管");
-        user.setAccount("微信账户");
         return user;
     }
 
@@ -29,8 +44,10 @@ public class UserServiceImpl implements UserService {
         user.setMoney((int) System.currentTimeMillis());
         user.setOrder(Math.toIntExact(id));
         user.setRole("超管");
-        user.setAccount("微信账户");
-        System.out.println("服务被调用-" + count);
+        // 远程调用
+        Account account = accountService.createAccount(user);
+        user.setAccount(account);
+        System.out.println("用户服务被调用-" + count);
         return user;
     }
 }

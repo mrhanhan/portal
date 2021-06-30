@@ -12,7 +12,9 @@ import com.portal.core.service.BeanDelegateService;
  * @author Mrhan
  * @date 2021/6/17 19:00
  */
-public class SimpleExampleServer extends ServerSocketPortal {
+public class SimpleUserServer extends ServerSocketPortal {
+
+
 
     @Override
     protected void onStart() throws Exception {
@@ -25,7 +27,7 @@ public class SimpleExampleServer extends ServerSocketPortal {
     }
     public static void main(String[] args) {
         try {
-            new SimpleExampleServer().startUp();
+            new SimpleUserServer().startUp();
         } catch (Exception e) {
             e.printStackTrace();
         }
