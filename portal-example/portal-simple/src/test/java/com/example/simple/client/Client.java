@@ -34,7 +34,7 @@ public class Client {
                 resolve.resolve(new User().setUsername("admin").setPassword("123456"), connection.getSession().getServiceContainer())
         });
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 10; i++) {
             JsonData data1 = new JsonData();
             data1.setService("userService");
             data1.setServiceId("login");

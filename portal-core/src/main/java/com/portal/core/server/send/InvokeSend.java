@@ -20,6 +20,7 @@ public interface InvokeSend extends Send, DataMonitorRegister{
      * @param data              发起调用
      * @param connection        发起调用
      * @param resultConsumer    响应: resultConsumer
+     * @throws IOException 可能调用失败
      */
     void invokeSend(Data<?> data, Connection connection, Consumer<Param> resultConsumer) throws IOException;
 

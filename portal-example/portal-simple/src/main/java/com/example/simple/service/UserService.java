@@ -15,4 +15,11 @@ public interface UserService {
      * @return  返回登录后的用户信息
      */
     User login(User user);
+
+    /**
+     * 获取用户信息
+     * @param id    获取用户信息
+     * @return  User
+     */
+    User getUserInfo(Long id);
 }
