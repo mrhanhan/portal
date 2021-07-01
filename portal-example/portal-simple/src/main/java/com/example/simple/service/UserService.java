@@ -1,5 +1,6 @@
 package com.example.simple.service;
 
+import com.example.simple.model.NoSerial;
 import com.example.simple.model.User;
 
 /**
@@ -22,4 +23,7 @@ public interface UserService {
      * @return  User
      */
     User getUserInfo(Long id);
+
+
+    NoSerial test();
 }

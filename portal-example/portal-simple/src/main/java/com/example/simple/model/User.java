@@ -29,4 +29,6 @@ public class User implements Serializable {
 
     private int money;
     private int order;
+
+    private NoSerial noSerial;
 }

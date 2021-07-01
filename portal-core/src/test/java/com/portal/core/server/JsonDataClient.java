@@ -1,6 +1,7 @@
 package com.portal.core.server;
 
 import com.alibaba.fastjson.JSON;
+import com.portal.core.discovery.ProxyInvokeSend;
 import com.portal.core.protocol.JsonData;
 import com.portal.core.protocol.JsonProtocol;
 import com.portal.core.protocol.param.DefaultParamResolve;
@@ -36,8 +37,8 @@ public class JsonDataClient {
         socket.connect(new InetSocketAddress(port));
         InputStream input = socket.getInputStream();
         OutputStream output = socket.getOutputStream();
-
-        DefaultParamResolve resolve = new DefaultParamResolve();
+        ProxyInvokeSend proxyInvokeSend = new ProxyInvokeSend();
+        DefaultParamResolve resolve = new DefaultParamResolve(proxyInvokeSend);
         SimpleServiceContainer simpleServiceContainer = new SimpleServiceContainer();
 
 

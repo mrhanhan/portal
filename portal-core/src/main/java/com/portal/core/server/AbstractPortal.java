@@ -2,9 +2,12 @@ package com.portal.core.server;
 
 import com.portal.core.Portal;
 import com.portal.core.connect.Connection;
+import com.portal.core.discovery.ProxyInvokeSend;
 import com.portal.core.protocol.JsonProtocol;
 import com.portal.core.protocol.Protocol;
 import com.portal.core.protocol.SimpleTextProtocol;
+import com.portal.core.protocol.param.DefaultParamResolve;
+import com.portal.core.protocol.param.ParamResolve;
 import com.portal.core.server.invoker.DefaultInvoker;
 import com.portal.core.server.invoker.Invoker;
 import com.portal.core.server.monitor.SimpleDataMonitor;
@@ -51,6 +54,11 @@ public abstract class AbstractPortal implements Portal {
      */
     private ResultSend resultSend;
     /**
+     * 参数解析器
+     */
+    private ParamResolve paramResolve;
+
+    /**
      * 调用数据处理器
      */
     @Delegate(types = { DataHandler.class })
@@ -84,13 +92,17 @@ public abstract class AbstractPortal implements Portal {
         connectionMonitor = createConnectionMonitor();
         // 检测器
         dataMonitorRegister = new SimpleDataMonitorRegister(executorService);
+        // 参数解析器
+        paramResolve = createParamResolve();
         // 初始化调用者
         invoker = createInvoker();
         // resultSend
         resultSend = createResultSend();
         // 初始化调用数据处理器
         invokeDataHandler = createInvokerDataHandler();
+
     }
+
 
     @Override
     public final void startUp() throws Exception {
@@ -218,7 +230,13 @@ public abstract class AbstractPortal implements Portal {
      * @return  Invoker
      */
     protected  Invoker createInvoker() {
-        return new DefaultInvoker(this);
+        return new DefaultInvoker(this, this.paramResolve);
+    }
+
+
+    protected ParamResolve createParamResolve() {
+        ProxyInvokeSend invokeSend = new ProxyInvokeSend();
+        return new DefaultParamResolve(invokeSend);
     }
 
     protected MultipleProtocolDataHandler createMultipleProtocolDataHandler() {

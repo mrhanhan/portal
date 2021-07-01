@@ -2,10 +2,15 @@ package com.portal.core.protocol.param;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.portal.core.discovery.ProxyInvokeSend;
+import com.portal.core.server.Data;
 import com.portal.core.service.BeanDelegateService;
 import com.portal.core.service.ServiceContainer;
 import com.portal.core.utils.ByteVisit;
 import com.portal.core.utils.MethodUtil;
+import lombok.RequiredArgsConstructor;
+import net.sf.cglib.proxy.Enhancer;
+import net.sf.cglib.proxy.InvocationHandler;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -25,16 +30,16 @@ import java.util.UUID;
  * @author Mrhan
  * @date 2021/6/17 9:52
  */
+@RequiredArgsConstructor
 public class DefaultParamResolve implements ParamResolve {
     
     private final Charset defaultCharset = StandardCharsets.UTF_8;
 
-    public DefaultParamResolve() {
+    private final ProxyInvokeSend proxyInvokeSend;
 
-    }
 
     @Override
-    public <T> T resolve(Param param, Type cls) {
+    public <T> T resolve(Data<?> data, Param param, Type cls) {
         // TODO
         switch (param.getType()) {
             case NUMBER:
@@ -42,9 +47,9 @@ public class DefaultParamResolve implements ParamResolve {
             case STRING:
                 return (T) serialString(param, cls);
             case ARRAY:
-                return (T) serialArray(param, cls);
+                return (T) serialArray(data, param, cls);
             case OBJECT:
-                return (T) serialObject(param, cls);
+                return (T) serialObject(data, param, cls);
             default:
                 return null;
         }
@@ -56,7 +61,7 @@ public class DefaultParamResolve implements ParamResolve {
      * @param cls   数组类型
      * @return      返回对象
      */
-    protected Object serialArray(Param param, Type cls) {
+    protected Object serialArray(Data<?> data, Param param, Type cls) {
         Class<?> c = (Class<?>) cls;
         if (Collection.class.isAssignableFrom(c)) {
 
@@ -65,7 +70,7 @@ public class DefaultParamResolve implements ParamResolve {
             JSONArray array = new JSONArray();
             if (param.getChildren() != null) {
                 for (Param child : param.getChildren()) {
-                    array.add(JSON.toJSON(resolve(child, componentType)));
+                    array.add(JSON.toJSON(resolve(data, child, componentType)));
                 }
             }
             return array.toJavaObject(cls);
@@ -79,11 +84,24 @@ public class DefaultParamResolve implements ParamResolve {
      * @param cls
      * @return
      */
-    protected Object serialObject(Param param, Type cls) {
+    protected Object serialObject(Data<?> data, Param param, Type cls) {
         if (param.isQuote()) {
             // 如果是引用对象
             String serviceName = param.getQuoteService();
-
+            if (cls instanceof Class) {
+                Class<?> clazz = (Class<?>) cls;
+                Enhancer enhancer = new Enhancer();
+                if (clazz.isInterface()) {
+                    enhancer.setInterfaces(new Class[]{clazz});
+                } else {
+                    enhancer.setSuperclass(clazz);
+                }
+                enhancer.setCallback((InvocationHandler) (o, method, objects) -> {
+                    System.out.println("临时服务调用: " + serviceName + " _ " + method.getName());
+                    return proxyInvokeSend.invokeSend(data.getConnection(), serviceName, method.getName(), method.getReturnType(), objects);
+                });
+                return enhancer.create();
+            }
             return null;
         } else if (param.getData() != null){
             return JSON.parseObject(param.getData(), cls);
@@ -203,6 +221,7 @@ public class DefaultParamResolve implements ParamResolve {
             serviceContainer.register(service);
             param.setQuoteService(tempServiceName);
             param.setQuote(true);
+            System.out.println("注册临时服务调用: " + tempServiceName);
         } else {
             param.setData(JSON.toJSONBytes(obj));
         }

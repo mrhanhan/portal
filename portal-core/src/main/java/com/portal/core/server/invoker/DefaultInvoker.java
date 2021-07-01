@@ -1,8 +1,8 @@
 package com.portal.core.server.invoker;
 
-import com.portal.core.protocol.param.DefaultParamResolve;
 import com.portal.core.protocol.param.ParamResolve;
 import com.portal.core.service.ServiceContainer;
+import lombok.Setter;
 
 /**
  * DefaultInvoker
@@ -12,12 +12,16 @@ import com.portal.core.service.ServiceContainer;
  */
 public class DefaultInvoker extends AbstractInvoker{
 
-    public DefaultInvoker(ServiceContainer serviceContainer) {
+    @Setter
+    private ParamResolve paramResolve;
+
+    public DefaultInvoker(ServiceContainer serviceContainer,  ParamResolve paramResolve) {
         super(serviceContainer);
+        this.paramResolve = paramResolve;
     }
 
     @Override
     protected ParamResolve getParamResolve() {
-        return new DefaultParamResolve();
+        return paramResolve;
     }
 }

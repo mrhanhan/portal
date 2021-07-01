@@ -4,6 +4,7 @@ import com.example.simple.model.User;
 import com.portal.core.connect.Connection;
 import com.portal.core.connect.socket.ClientSocketConnectionManager;
 import com.portal.core.connect.socket.SocketConnectMetadata;
+import com.portal.core.discovery.ProxyInvokeSend;
 import com.portal.core.protocol.JsonData;
 import com.portal.core.protocol.param.DefaultParamResolve;
 import com.portal.core.protocol.param.Param;
@@ -47,9 +48,9 @@ public class MockMultipleClient {
 
         Connection connection = manager.getConnection(SocketConnectMetadata.createSocketMetadata("localhost", 1720));
 
-        DefaultInvokeSend defaultInvokeSend = new DefaultInvokeSend();
-
-        DefaultParamResolve resolve = new DefaultParamResolve();
+        ProxyInvokeSend proxyInvokeSend = new ProxyInvokeSend();
+        DefaultParamResolve resolve = new DefaultParamResolve(proxyInvokeSend);
+        DefaultInvokeSend defaultInvokeSend = new DefaultInvokeSend(resolve);
 
         JsonData data = new JsonData();
         data.setService("userService");
@@ -57,16 +58,18 @@ public class MockMultipleClient {
         data.setParamArray(new Param[]{
                 resolve.resolve(new User().setUsername("admin").setPassword("123456"), connection.getSession().getServiceContainer())
         });
+        data.setConnection(connection);
         int c[] = new int[]{90};
         for (int i = 0; i < c[0]; i++) {
             JsonData data1 = new JsonData();
             data1.setService("userService");
             data1.setServiceId("login");
             data1.setParamArray(data.getParamArray());
+            data1.setConnection(connection);
             long time = System.currentTimeMillis();
             defaultInvokeSend.invokeSend(data1, connection, (param -> {
                 System.out.println("耗时:" + (System.currentTimeMillis() - time));
-                User user = resolve.resolve(param, User.class);
+                User user = resolve.resolve(data1, param, User.class);
                 System.out.println("响应：" + user);
             }));
             Thread.sleep(100);
@@ -74,7 +77,7 @@ public class MockMultipleClient {
         Thread.sleep(10000);
         long time1 = System.currentTimeMillis();
         defaultInvokeSend.invokeSend(data, connection, (param -> {
-            User user = resolve.resolve(param, User.class);
+            User user = resolve.resolve(data, param, User.class);
             System.out.println("响应：" + user);
             System.out.println(System.currentTimeMillis() - time1);
             try {
@@ -85,5 +88,6 @@ public class MockMultipleClient {
                 e.printStackTrace();
             }
         }));
+        proxyInvokeSend.close();
     }
 }

@@ -18,11 +18,9 @@ import java.lang.reflect.Type;
 public abstract class AbstractInvoker implements Invoker {
 
     private final ServiceContainer serviceContainer;
-    private final ParamResolve resolve;
 
     public AbstractInvoker(ServiceContainer serviceContainer) {
         this.serviceContainer = serviceContainer;
-        resolve = getParamResolve();
     }
 
     /**
@@ -35,13 +33,14 @@ public abstract class AbstractInvoker implements Invoker {
     @Override
     public Param invoke(Data<?> data) {
         // 获取服务
+        ParamResolve resolve = getParamResolve();
         Service service = getService(data);
         if (service == null) {
             // 抛出移除
             return resolve.resolve(new NullPointerException("Service Not Found"), getServiceContainer(data));
         }
         // 解析参数
-        Object[] args = resolveArguments(data.getParamArray(), service.getParamTypes(data.getServiceId()));
+        Object[] args = resolveArguments(data, data.getParamArray(), service.getParamTypes(data.getServiceId()));
         // 执行调用
         try {
             Object invoke = service.invoke(data.getServiceId(), args);
@@ -56,14 +55,16 @@ public abstract class AbstractInvoker implements Invoker {
     /**
      * 解析参数
      *
+     * @param data       数据对象
      * @param paramArray Param[]
      * @param paramTypes Type[]
      * @return Object[]
      */
-    protected Object[] resolveArguments(Param[] paramArray, Type[] paramTypes) {
+    protected Object[] resolveArguments(Data<?> data, Param[] paramArray, Type[] paramTypes) {
         Object[] args = new Object[paramTypes.length];
+        ParamResolve resolve = getParamResolve();
         for (int i = 0; i < paramTypes.length; i++) {
-            args[i] = resolve.resolve(paramArray[i], paramTypes[i]);
+            args[i] = resolve.resolve(data, paramArray[i], paramTypes[i]);
         }
         return args;
     }

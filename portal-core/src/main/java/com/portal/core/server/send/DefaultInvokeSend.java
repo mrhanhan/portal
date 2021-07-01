@@ -4,6 +4,7 @@ import com.portal.core.ExceptionHandler;
 import com.portal.core.connect.Connection;
 import com.portal.core.protocol.JsonProtocol;
 import com.portal.core.protocol.param.Param;
+import com.portal.core.protocol.param.ParamResolve;
 import com.portal.core.server.Data;
 import com.portal.core.server.DataMonitorRegister;
 import com.portal.core.server.InvokeDataHandler;
@@ -52,8 +53,8 @@ public class DefaultInvokeSend extends DefaultInvoker implements InvokeSend, Exc
     @Getter
     private InvokeDataHandler invokeDataHandler ;
 
-    public DefaultInvokeSend() {
-        super(null);
+    public DefaultInvokeSend(ParamResolve paramResolve) {
+        super(null, paramResolve);
         executorService = createExecutorService();
         dataMonitorRegister = new SimpleDataMonitorRegister(executorService);
         multipleProtocolDataHandler = new MultipleProtocolDataHandler();

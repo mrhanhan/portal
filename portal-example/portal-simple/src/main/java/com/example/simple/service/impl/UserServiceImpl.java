@@ -1,6 +1,7 @@
 package com.example.simple.service.impl;
 
 import com.example.simple.model.Account;
+import com.example.simple.model.NoSerial;
 import com.example.simple.model.User;
 import com.example.simple.service.AccountService;
 import com.example.simple.service.UserService;
@@ -44,10 +45,16 @@ public class UserServiceImpl implements UserService {
         user.setMoney((int) System.currentTimeMillis());
         user.setOrder(Math.toIntExact(id));
         user.setRole("超管");
+        user.setNoSerial(new NoSerial());
         // 远程调用
         Account account = accountService.createAccount(user);
         user.setAccount(account);
         System.out.println("用户服务被调用-" + count);
         return user;
+    }
+
+    @Override
+    public NoSerial test() {
+        return new NoSerial();
     }
 }

@@ -23,6 +23,7 @@ public class SimpleUserServer extends ServerSocketPortal {
         BeanDelegateService service = new BeanDelegateService("userService", new UserServiceImpl(), UserService.class);
         service.register("login", User.class);
         service.register("getUserInfo", Long.class);
+        service.register("test");
         register(service);
     }
     public static void main(String[] args) {

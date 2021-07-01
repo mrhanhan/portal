@@ -4,6 +4,7 @@ import com.example.simple.model.User;
 import com.portal.core.connect.Connection;
 import com.portal.core.connect.socket.ClientSocketConnectionManager;
 import com.portal.core.connect.socket.SocketConnectMetadata;
+import com.portal.core.discovery.ProxyInvokeSend;
 import com.portal.core.protocol.JsonData;
 import com.portal.core.protocol.param.DefaultParamResolve;
 import com.portal.core.protocol.param.Param;
@@ -23,9 +24,9 @@ public class Client {
 
         Connection connection = manager.getConnection(SocketConnectMetadata.createSocketMetadata("localhost", 1720));
 
-        DefaultInvokeSend defaultInvokeSend = new DefaultInvokeSend();
+        DefaultParamResolve resolve = new DefaultParamResolve(new ProxyInvokeSend());
+        DefaultInvokeSend defaultInvokeSend = new DefaultInvokeSend(resolve);
 
-        DefaultParamResolve resolve = new DefaultParamResolve();
 
         JsonData data = new JsonData();
         data.setService("userService");
@@ -33,15 +34,16 @@ public class Client {
         data.setParamArray(new Param[]{
                 resolve.resolve(new User().setUsername("admin").setPassword("123456"), connection.getSession().getServiceContainer())
         });
-
+        data.setConnection(connection);
         for (int i = 0; i < 10; i++) {
             JsonData data1 = new JsonData();
             data1.setService("userService");
             data1.setServiceId("login");
             data1.setParamArray(data.getParamArray());
+            data1.setConnection(connection);
             long time = System.currentTimeMillis();
             defaultInvokeSend.invokeSend(data1, connection, (param -> {
-                User user = resolve.resolve(param, User.class);
+                User user = resolve.resolve(data1, param, User.class);
                 System.out.println("响应：" + user);
                 System.out.println("耗时:" + (System.currentTimeMillis() - time));
             }));
@@ -49,7 +51,7 @@ public class Client {
         Thread.sleep(1000);
         long time1 = System.currentTimeMillis();
         defaultInvokeSend.invokeSend(data, connection, (param -> {
-            User user = resolve.resolve(param, User.class);
+            User user = resolve.resolve(data, param, User.class);
             System.out.println("响应：" + user);
             System.out.println(System.currentTimeMillis() - time1);
             try {
