@@ -3,6 +3,7 @@ package com.portal.core.connect.socket;
 import com.portal.core.connect.AbstractCacheConnectionManager;
 import com.portal.core.connect.ConnectMetadata;
 import com.portal.core.connect.Connection;
+import com.portal.core.connect.ConnectionSessionManager;
 import lombok.SneakyThrows;
 
 import java.io.IOException;
@@ -50,5 +51,10 @@ public class ServerSocketConnectionManager extends AbstractCacheConnectionManage
     public void close() throws IOException {
         super.close();
         socket.close();
+    }
+
+    @Override
+    public ConnectionSessionManager getConnectionSessionManager() {
+        return null;
     }
 }

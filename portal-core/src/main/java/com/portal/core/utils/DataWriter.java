@@ -45,6 +45,7 @@ public class DataWriter extends ByteCache{
     private void writeParam(Param param) {
         // 参数类型 1 byte
         byte type = (byte) param.getType().ordinal();
+        write(type);
         // 参数标志 1 byte
         byte flag = 0;
         // 是否是引用
@@ -52,7 +53,7 @@ public class DataWriter extends ByteCache{
             flag |= (1 << 2);
         }
         // 是否是异常
-        if (param.isQuote()) {
+        if (param.isException()) {
             flag |= (1 << 1);
         }
         // 是否有字段名称
@@ -76,8 +77,8 @@ public class DataWriter extends ByteCache{
         }
         // 是否有子参数
         Param[] children = param.getChildren();
+        write(ByteVisit.intToBytes(Objects.isNull(children) ? 0: children.length));
         if (Objects.nonNull(children)) {
-            write(ByteVisit.intToBytes(children.length));
             for (Param child : children) {
                 this.writeParam(child);
             }

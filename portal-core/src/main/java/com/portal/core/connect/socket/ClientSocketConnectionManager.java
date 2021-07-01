@@ -3,6 +3,7 @@ package com.portal.core.connect.socket;
 import com.portal.core.connect.AbstractCacheConnectionManager;
 import com.portal.core.connect.ConnectMetadata;
 import com.portal.core.connect.Connection;
+import com.portal.core.connect.ConnectionSessionManager;
 
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -29,5 +30,10 @@ public class ClientSocketConnectionManager extends AbstractCacheConnectionManage
             socket.connect(new InetSocketAddress(connectMetadata.getPort()));
         }
         return new SocketConnect(socket);
+    }
+
+    @Override
+    public ConnectionSessionManager getConnectionSessionManager() {
+        return null;
     }
 }
