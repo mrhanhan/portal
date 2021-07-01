@@ -3,6 +3,9 @@ package com.example.simple.service;
 import com.example.simple.model.NoSerial;
 import com.example.simple.model.User;
 
+import java.io.File;
+import java.io.OutputStream;
+
 /**
  * UserService
  *
@@ -26,4 +29,10 @@ public interface UserService {
 
 
     NoSerial test();
+
+    File file();
+
+    OutputStream output();
+
+    String printOutput();
 }

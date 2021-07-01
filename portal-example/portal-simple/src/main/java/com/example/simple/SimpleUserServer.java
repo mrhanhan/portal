@@ -24,6 +24,9 @@ public class SimpleUserServer extends ServerSocketPortal {
         service.register("login", User.class);
         service.register("getUserInfo", Long.class);
         service.register("test");
+        service.register("file");
+        service.register("output");
+        service.register("printOutput");
         register(service);
     }
     public static void main(String[] args) {

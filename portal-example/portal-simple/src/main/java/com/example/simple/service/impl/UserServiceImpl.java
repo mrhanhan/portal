@@ -10,6 +10,10 @@ import com.portal.core.connect.socket.SocketConnectMetadata;
 import com.portal.core.discovery.DefaultServiceDiscovery;
 import com.portal.core.discovery.ServiceDiscovery;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.OutputStream;
+
 /**
  * UserServiceImpl
  *
@@ -19,6 +23,8 @@ import com.portal.core.discovery.ServiceDiscovery;
 public class UserServiceImpl implements UserService {
 
     private int count = 0;
+
+    private ByteArrayOutputStream output = new ByteArrayOutputStream();
 
     private AccountService accountService;
 
@@ -56,5 +62,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public NoSerial test() {
         return new NoSerial();
+    }
+
+    @Override
+    public File file() {
+        return new File("E:\\NutProject\\portal\\portal-example\\portal-simple\\src\\main\\java\\com\\example\\simple\\service\\UserService.java");
+    }
+
+    @Override
+    public OutputStream output() {
+        return output;
+    }
+
+    @Override
+    public String printOutput() {
+        return new String(output.toByteArray());
     }
 }
