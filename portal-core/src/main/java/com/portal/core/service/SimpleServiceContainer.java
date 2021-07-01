@@ -18,7 +18,7 @@ public class SimpleServiceContainer implements ServiceContainer {
     }
 
     @Override
-    public void register(Service service) {
+    public void registerService(Service service) {
         if (serviceMap.containsKey(service.getServiceName())) {
             throw new IllegalArgumentException("服务已存在:" + service.getServiceName());
         }

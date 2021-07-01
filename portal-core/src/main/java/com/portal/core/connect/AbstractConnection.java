@@ -1,6 +1,6 @@
 package com.portal.core.connect;
 
-import com.portal.core.server.send.CallingManager;
+import com.portal.core.context.send.CallingManager;
 import lombok.Getter;
 import lombok.Setter;
 

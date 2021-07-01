@@ -14,7 +14,7 @@ public class Test {
     @SneakyThrows
     public static void main(String[] args) {
         SimpleServiceContainer container = new SimpleServiceContainer();
-        container.register(new MethodDelegateService("print", new FileService(), "print"));
+        container.registerService(new MethodDelegateService("print", new FileService(), "print"));
 
         System.out.println(container.getService("print").invoke(null));
     }

@@ -14,10 +14,9 @@ import java.lang.reflect.Method;
  */
 public abstract class AbstractServiceDiscovery implements ServiceDiscovery{
 
-    private ProxyInvokeSend proxyInvokeSend;
+
 
     public AbstractServiceDiscovery() {
-        proxyInvokeSend = new ProxyInvokeSend();
     }
 
     @Override
@@ -32,7 +31,7 @@ public abstract class AbstractServiceDiscovery implements ServiceDiscovery{
         enhancer.setCallback(new InvocationHandler() {
             @Override
             public Object invoke(Object o, Method method, Object[] objects) throws Throwable {
-                return proxyInvokeSend.invokeSend(connection, name, method.getName(), method.getReturnType(), objects);
+                return null;
             }
         });
         return (T) enhancer.create();
@@ -46,6 +45,5 @@ public abstract class AbstractServiceDiscovery implements ServiceDiscovery{
 
     @Override
     public void close() throws Exception {
-        proxyInvokeSend.close();
     }
 }

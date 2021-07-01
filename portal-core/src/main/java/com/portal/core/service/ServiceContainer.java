@@ -11,7 +11,7 @@ public interface ServiceContainer {
      * 注册服务
      * @param service   注册服务
      */
-    void register(Service service);
+    void registerService(Service service);
 
     /**
      * 根据服务名称获取服务对象
