@@ -11,6 +11,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class ClassUtil {
 
+
     /**
      * 获取类型级别
      * @param cls   类型
@@ -23,5 +24,16 @@ public class ClassUtil {
             cls = cls.getSuperclass();
         }
         return i;
+    }
+
+    public boolean isAssignable(Class<?> targetClass, Class<?> ...classes) {
+        if (classes != null) {
+            for (Class<?> aClass : classes) {
+                if (targetClass.isAssignableFrom(aClass)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

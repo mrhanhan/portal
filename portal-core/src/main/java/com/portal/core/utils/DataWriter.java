@@ -28,7 +28,7 @@ public class DataWriter extends ByteCache{
         this.writeStringAndLength(data.getServiceId());
         // 写入参数个数
         Param[] params = data.getParams();
-        this.write(ByteVisit.intToBytes(Objects.isNull(params) ? 0 : params.length));
+        this.write(ByteVisit.intToBytes(Objects.isNull(params) ? 0 : params.length, 4));
         // 写入参数数据
         if (Objects.nonNull(params)) {
             for (Param param : params) {
@@ -72,12 +72,12 @@ public class DataWriter extends ByteCache{
         // 数据和长度
         if (param.getData() != null) {
             byte[] data = param.getData();
-            write(ByteVisit.intToBytes(data.length));
+            write(ByteVisit.intToBytes(data.length, 4));
             write(data);
         }
         // 是否有子参数
         Param[] children = param.getChildren();
-        write(ByteVisit.intToBytes(Objects.isNull(children) ? 0: children.length));
+        write(ByteVisit.intToBytes(Objects.isNull(children) ? 0: children.length, 4));
         if (Objects.nonNull(children)) {
             for (Param child : children) {
                 this.writeParam(child);
@@ -93,7 +93,7 @@ public class DataWriter extends ByteCache{
             data = str.getBytes(StandardCharsets.UTF_8);
             length = data.length;
         }
-        super.write(ByteVisit.intToBytes(length));
+        super.write(ByteVisit.intToBytes(length, 4));
 
         if(Objects.nonNull(data)) {
             super.write(data);

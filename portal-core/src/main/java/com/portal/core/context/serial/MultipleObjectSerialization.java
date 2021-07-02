@@ -25,7 +25,7 @@ public class MultipleObjectSerialization implements ObjectSerialization<Object> 
     }
 
     @Override
-    public boolean isSupport(Param param, Class<Object> cls) {
+    public boolean isSupport(Param param, Class<? extends Object> cls) {
         for (AbstractObjectSerialization abstractObjectSerialization : objectSerializationSet) {
             if (abstractObjectSerialization.isSupport(param, cls)) {
                 return true;
@@ -35,7 +35,7 @@ public class MultipleObjectSerialization implements ObjectSerialization<Object> 
     }
 
     @Override
-    public Object serial(Param param, Class<Object> cls) {
+    public Object serial(Param param, Class<? extends Object> cls) {
         List<AbstractObjectSerialization> objectSerializationList = new ArrayList<>(objectSerializationSet);
         objectSerializationList = objectSerializationList.stream().filter(t -> t.isSupport(param, cls)).collect(Collectors.toList());
         // 类型

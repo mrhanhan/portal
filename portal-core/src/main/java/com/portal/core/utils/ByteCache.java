@@ -13,6 +13,12 @@ import java.nio.charset.StandardCharsets;
  */
 public class ByteCache  extends ByteArrayOutputStream {
 
+    public ByteCache() {
+    }
+
+    public ByteCache(int size) {
+        super(size);
+    }
 
     @SneakyThrows
     public void writeString(String string) {

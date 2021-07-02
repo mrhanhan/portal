@@ -1,6 +1,8 @@
 package com.portal.core.context.serial;
 
 import com.portal.core.context.ParamSerialization;
+import com.portal.core.model.Param;
+import com.portal.core.model.ParamTypeEnum;
 import com.portal.core.utils.ClassUtil;
 import lombok.Getter;
 
@@ -43,5 +45,28 @@ public abstract class AbstractParamSerialization<T> implements ParamSerializatio
         return ClassUtil.getDeep(genericType);
     }
 
+    /**
+     * 创建默认的Param
+     * @param field 字段名称
+     * @param type  字段类型
+     * @return  Param
+     */
+    protected Param createParam(String field, ParamTypeEnum type) {
+        Param param = new Param();
+        param.setType(type);
+        param.setQuote(false);
+        param.setException(false);
+        param.setFiledName(field);
+        return param;
+    }
+
+    /**
+     * 创建默认的Param
+     * @param type  字段类型
+     * @return  Param
+     */
+    protected Param createParam(ParamTypeEnum type) {
+        return createParam(null, type);
+    }
 
 }

@@ -15,7 +15,7 @@ public interface ObjectSerialization<T>  {
      * @param cls   Cls
      * @return      返回序列化后的Param
      */
-    T serial(Param param, Class<T> cls);
+    T serial(Param param, Class<? extends T> cls);
 
     /**
      * 是否依赖支持
@@ -23,5 +23,5 @@ public interface ObjectSerialization<T>  {
      * @param cls   cls
      * @return  返回Boolan
      */
-    boolean isSupport(Param param, Class<T> cls);
+    boolean isSupport(Param param, Class<? extends T> cls);
 }

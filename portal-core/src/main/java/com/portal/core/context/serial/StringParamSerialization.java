@@ -1,6 +1,10 @@
 package com.portal.core.context.serial;
 
 import com.portal.core.model.Param;
+import com.portal.core.model.ParamTypeEnum;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 /**
  * DefaultParamSerialization
@@ -12,7 +16,9 @@ public class StringParamSerialization extends AbstractParamSerialization<String>
 
     @Override
     public Param serial(String data) {
-        return null;
+        Param param = createParam(ParamTypeEnum.STRING);
+        param.setData(Objects.isNull(data) ? new byte[0] : data.getBytes(StandardCharsets.UTF_8));
+        return param;
     }
 
 }

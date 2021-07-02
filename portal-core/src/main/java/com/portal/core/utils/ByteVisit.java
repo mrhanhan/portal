@@ -2,6 +2,9 @@ package com.portal.core.utils;
 
 import lombok.experimental.UtilityClass;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 
 /**
  * ByteVisit
@@ -12,7 +15,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class ByteVisit {
 
-
+    public static final byte[] DECIMAL_FLAG_DATA = new byte[]{0x0, 0xA, 0xB, 0x0};
     /**
      * 开始位置
      *
@@ -41,80 +44,82 @@ public class ByteVisit {
     }
 
     public byte[] intToBytes(int integer) {
-        byte[] bytes = new byte[4];
-        bytes[3] = (byte) (integer >> 24);
-        bytes[2] = (byte) (integer >> 16);
-        bytes[1] = (byte) (integer >> 8);
-        bytes[0] = (byte) integer;
-        return bytes;
+        return BigInteger.valueOf(integer).toByteArray();
     }
 
+    public byte[] intToBytes(int integer, int length) {
+        return fill(BigInteger.valueOf(integer).toByteArray(), 4);
+    }
+
+    public byte[] fill(byte[] source, int length) {
+        if (source.length > length) {
+            return get(source, 0, length);
+        } else if (source.length == length) {
+            return source;
+        } else {
+            byte[] result = new byte[length];
+            // 复制到尾部
+            int i = 0;
+            int fillCount = length - source.length;
+            for (int i1 = 0; i1 < fillCount; i1++) {
+                result[i++] = 0;
+            }
+            for (byte b : source) {
+                result[i++] = b;
+            }
+            return result;
+        }
+    }
+
+
     public int bytesToInt(byte[] bytes) {
-        //如果不与0xff进行按位与操作，转换结果将出错，有兴趣的同学可以试一下。
-        int int1 = bytes[0] & 0xff;
-        int int2 = (bytes[1] & 0xff) << 8;
-        int int3 = (bytes[2] & 0xff) << 16;
-        int int4 = (bytes[3] & 0xff) << 24;
-        return int1 | int2 | int3 | int4;
+        return new BigInteger(bytes).intValue();
     }
 
     public static byte[] longToBytes(long l) {
-        byte[] result = new byte[8];
-        for (int i = 7; i >= 0; i--) {
-            result[i] = (byte) (l & 0xFF);
-            l >>= 8;
-        }
-        return result;
-
+        return BigInteger.valueOf(l).toByteArray();
     }
 
-    public static long bytesToLong(byte[] b) {
-        long result = 0;
-        for (int i = 0; i < 8; i++) {
-            result <<= 8;
-            result |= (b[i] & 0xFF);
-
-        }
-        return result;
+    public static byte[] longToBytes(long l, int length) {
+        return fill(longToBytes(l), length);
     }
+
+    public static long bytesToLong(byte[] bytes) {
+        return new BigInteger(bytes).longValue();
+    }
+
 
     public static byte[] charToByte(char c) {
-        byte[] b = new byte[2];
-        b[0] = (byte) ((c & 0xFF00) >> 8);
-        b[1] = (byte) (c & 0xFF);
-        return b;
+        return intToBytes(c);
     }
 
-    public static char byteToChar(byte[] b) {
-        int hi = (b[0] & 0xFF) << 8;
-        int lo = b[1] & 0xFF;
-        return (char) (hi | lo);
+    public static byte[] charToByte(char c, int length) {
+        return fill(intToBytes(c), length);
     }
 
-    public static byte[] floatToByte(float data)
-    {
-        int intBits = Float.floatToIntBits(data);
-        return intToBytes(intBits);
+
+    public static char byteToChar(byte[] bytes) {
+        return (char) new BigInteger(bytes).intValue();
     }
 
-    public static byte[] doubleToByte(double data)
-    {
-        long intBits = Double.doubleToLongBits(data);
-        return longToBytes(intBits);
+    public static byte[] floatToByte(float data) {
+        return serialBytes(BigDecimal.valueOf(data));
     }
 
-    public static float byteToFloat(byte[] bytes)
-    {
-        return Float.intBitsToFloat(bytesToInt(bytes));
+    public static byte[] doubleToByte(double data) {
+        return serialBytes(BigDecimal.valueOf(data));
     }
 
-    public static double byteToDouble(byte[] bytes)
-    {
-        long l = bytesToLong(bytes);
-        return Double.longBitsToDouble(l);
+
+    public static float byteToFloat(byte[] bytes) {
+        return serialDecimal(bytes).floatValue();
     }
 
-    public static byte[] join(byte[] ...bytes) {
+    public static double byteToDouble(byte[] bytes) {
+        return serialDecimal(bytes).doubleValue();
+    }
+
+    public static byte[] join(byte[]... bytes) {
         int length = 0;
         for (byte[] data : bytes) {
             length += data.length;
@@ -135,5 +140,37 @@ public class ByteVisit {
             data[i] = source[start + i];
         }
         return data;
+    }
+    /**
+     * 序列化BigDecimal
+     * @param decimal   BigDecimal
+     * @return  bytes
+     */
+    public byte[] serialBytes(BigDecimal decimal) {
+        // 没有标记的decimal
+        // 前二位填充小数位长度，4个字节，4个子节的标记标记为
+        byte[] d = decimal.unscaledValue().toByteArray();
+        return ByteVisit.join(DECIMAL_FLAG_DATA, ByteVisit.intToBytes(decimal.scale(), 4), d);
+    }
+
+    /**
+     * 序列化为BigDecimal
+     * @param bytes bytes
+     * @return BigDecimal
+     */
+    public BigDecimal serialDecimal(byte[] bytes) {
+        byte[] decimalVal = bytes;
+        boolean flag = false;
+        int scale = 0;
+        if (bytes.length + 4 > DECIMAL_FLAG_DATA.length && ByteVisit.equ(bytes, DECIMAL_FLAG_DATA)) {
+            flag = true;
+            decimalVal = ByteVisit.get(bytes, DECIMAL_FLAG_DATA.length + 4, bytes.length - (DECIMAL_FLAG_DATA.length + 4));
+            scale = ByteVisit.bytesToInt(ByteVisit.get(bytes, DECIMAL_FLAG_DATA.length, 4));
+        }
+        if (flag) {
+            return new BigDecimal(new BigInteger(decimalVal), scale);
+        } else {
+            return new BigDecimal(new BigInteger(bytes));
+        }
     }
 }
