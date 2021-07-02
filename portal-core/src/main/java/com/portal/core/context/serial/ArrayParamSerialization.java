@@ -7,31 +7,37 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Collection;
+import java.lang.reflect.Array;
 
 /**
- * CollectionParamSerialization
+ * ArrayParamSerialization
  *
  * @author Mrhan
  * @date 2021/7/2 11:04
  */
 @AllArgsConstructor
-public class CollectionParamSerialization extends AbstractParamSerialization<Collection> {
+public class ArrayParamSerialization extends AbstractParamSerialization<Object> {
+
 
     @Getter
     @Setter
     private ParamSerialization<Object> childrenParamSerialization;
 
+
     @Override
-    public Param serial(Collection data) {
+    public Param serial(Object data) {
         Param param = createParam(ParamTypeEnum.ARRAY);
-        int size = data.size();
+        int size = Array.getLength(data);
         Param[] children = new Param[size];
-        int i = 0;
-        for (Object obj : data) {
-            children[i ++] = childrenParamSerialization.serial(obj);
+        for (int i = 0; i < size; i++) {
+            children[i] = childrenParamSerialization.serial(Array.get(data, i));
         }
         param.setChildren(children);
         return param;
+    }
+
+    @Override
+    public boolean isSupport(Object o) {
+        return o.getClass().isArray();
     }
 }

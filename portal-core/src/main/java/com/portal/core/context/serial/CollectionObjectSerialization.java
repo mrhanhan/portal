@@ -91,6 +91,11 @@ public class CollectionObjectSerialization extends AbstractObjectSerialization<C
 
     @Override
     public boolean isSupport(Param param, Type cls) {
+        if (cls instanceof Class<?>) {
+            if (((Class<?>) cls).isArray()) {
+                return false;
+            }
+        }
         return param.getType() == ParamTypeEnum.ARRAY && !param.isQuote();
     }
 }
