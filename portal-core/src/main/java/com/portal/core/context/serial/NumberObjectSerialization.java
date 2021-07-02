@@ -1,9 +1,11 @@
 package com.portal.core.context.serial;
 
 import com.portal.core.model.Param;
+import com.portal.core.model.ParamTypeEnum;
 import com.portal.core.utils.ByteVisit;
 import com.portal.core.utils.ClassUtil;
 
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -19,7 +21,8 @@ public class NumberObjectSerialization extends AbstractObjectSerialization<Numbe
 
 
     @Override
-    public Number serial(Param param, Class<? extends Number> cls) {
+    public Number serial(Param param, Type type) {
+        Class<?> cls = (Class<?>) type;
         Number number;
         byte[] bytes = param.getData();
         byte[] decimalVal = param.getData();
@@ -60,7 +63,12 @@ public class NumberObjectSerialization extends AbstractObjectSerialization<Numbe
     }
 
     @Override
-    public boolean isSupport(Param param, Class<? extends Number> cls) {
-        return ClassUtil.isAssignable(cls, int.class, Integer.class, long.class, Long.class, short.class, Short.class, byte.class, Byte.class, BigInteger.class, BigDecimal.class, double.class, Double.class, float.class, Float.class );
+    public boolean isSupport(Param param, Type type) {
+        Class<?> cls;
+        if (!(type instanceof Class)) {
+            return false;
+        }
+        cls = (Class<?>) type;
+        return param.getType() == ParamTypeEnum.NUMBER && ClassUtil.isAssignable(cls, int.class, Integer.class, long.class, Long.class, short.class, Short.class, byte.class, Byte.class, BigInteger.class, BigDecimal.class, double.class, Double.class, float.class, Float.class ) && !param.isQuote();
     }
 }

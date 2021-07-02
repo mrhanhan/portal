@@ -3,6 +3,7 @@ package com.portal.core.context.serial;
 import com.portal.core.context.ObjectSerialization;
 import com.portal.core.model.Param;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -24,8 +25,13 @@ public class MultipleObjectSerialization implements ObjectSerialization<Object> 
         objectSerializationSet = new HashSet<>();
     }
 
+
+    public void add(AbstractObjectSerialization<?> abstractObjectSerialization) {
+        objectSerializationSet.add(abstractObjectSerialization);
+    }
+
     @Override
-    public boolean isSupport(Param param, Class<? extends Object> cls) {
+    public boolean isSupport(Param param, Type cls) {
         for (AbstractObjectSerialization abstractObjectSerialization : objectSerializationSet) {
             if (abstractObjectSerialization.isSupport(param, cls)) {
                 return true;
@@ -35,7 +41,7 @@ public class MultipleObjectSerialization implements ObjectSerialization<Object> 
     }
 
     @Override
-    public Object serial(Param param, Class<? extends Object> cls) {
+    public Object serial(Param param, Type cls) {
         List<AbstractObjectSerialization> objectSerializationList = new ArrayList<>(objectSerializationSet);
         objectSerializationList = objectSerializationList.stream().filter(t -> t.isSupport(param, cls)).collect(Collectors.toList());
         // 类型

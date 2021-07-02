@@ -1,7 +1,9 @@
 package com.portal.core.context.serial;
 
 import com.portal.core.model.Param;
+import com.portal.core.model.ParamTypeEnum;
 
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -12,7 +14,7 @@ import java.nio.charset.StandardCharsets;
  */
 public class StringObjectSerialization extends AbstractObjectSerialization<String> {
     @Override
-    public String serial(Param param, Class<? extends String> cls) {
+    public String serial(Param param, Type cls) {
         byte[] data = param.getData();
         if (data == null) {
             return "";
@@ -21,7 +23,7 @@ public class StringObjectSerialization extends AbstractObjectSerialization<Strin
     }
 
     @Override
-    public boolean isSupport(Param param, Class<? extends String> cls) {
-        return cls.isAssignableFrom(cls);
+    public boolean isSupport(Param param, Type cls) {
+        return param.getType() == ParamTypeEnum.STRING && cls instanceof Class && ((Class<?>)cls).isAssignableFrom(String.class);
     }
 }

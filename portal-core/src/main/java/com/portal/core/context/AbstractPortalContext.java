@@ -2,13 +2,14 @@ package com.portal.core.context;
 
 import com.portal.core.connect.Connection;
 import com.portal.core.context.lifecycle.PortalLifeCycleManager;
+import com.portal.core.context.serial.AbstractObjectSerialization;
+import com.portal.core.context.serial.AbstractParamSerialization;
+import com.portal.core.context.serial.MultipleObjectSerialization;
+import com.portal.core.context.serial.MultipleParamSerialization;
 import com.portal.core.service.ServiceContainer;
 import com.portal.core.service.SimpleServiceContainer;
 import lombok.SneakyThrows;
 import lombok.experimental.Delegate;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * AbstractPortalContext
@@ -41,10 +42,11 @@ public abstract class AbstractPortalContext implements PortalContext{
      */
     private DataHandler dataHandler;
     /**
-     * 数据序列化集合反序列化集合
+     * 数据序列化和反序列化
      */
-    private Set<ParamSerialization<?>> paramSerializationSet;
-    private Set<ObjectSerialization<?>> objectSerializationSet;
+    private MultipleParamSerialization multipleParamSerialization;
+    private MultipleObjectSerialization multipleObjectSerialization;
+
 
     private final Object statusLock = new Object();
 
@@ -64,8 +66,8 @@ public abstract class AbstractPortalContext implements PortalContext{
         // 初始化服务容器
         simpleServiceContainer = new SimpleServiceContainer();
         // 序列化和反序列化集合
-        paramSerializationSet = new HashSet<>();
-        objectSerializationSet = new HashSet<>();
+        multipleParamSerialization = new MultipleParamSerialization();
+        multipleObjectSerialization = new MultipleObjectSerialization();
     }
 
     @Override
@@ -92,6 +94,8 @@ public abstract class AbstractPortalContext implements PortalContext{
         connectionMonitor = getConnectionMonitor(connectionHandler);
         // 注册检测项
         monitorManager.addMonitor(connectionMonitor, true);
+        // 数据驱动器
+
         // 调用管理器的启动
         portalLifeCycleManager.onStartup(context);
     }
@@ -119,13 +123,13 @@ public abstract class AbstractPortalContext implements PortalContext{
 
 
     @Override
-    public void addObjectSerialization(ObjectSerialization<?> objectSerialization) {
-        this.objectSerializationSet.add(objectSerialization);
+    public void addObjectSerialization(AbstractObjectSerialization<?> objectSerialization) {
+        this.multipleObjectSerialization.add(objectSerialization);
     }
 
     @Override
-    public void addParamSerialization(ParamSerialization<?> paramSerialization) {
-        this.paramSerializationSet.add(paramSerialization);
+    public void addParamSerialization(AbstractParamSerialization<?> paramSerialization) {
+        this.multipleParamSerialization.add(paramSerialization);
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.portal.core.context;
 
 import com.portal.core.ExceptionHandler;
+import com.portal.core.context.serial.AbstractObjectSerialization;
+import com.portal.core.context.serial.AbstractParamSerialization;
 import com.portal.core.service.ServiceContainer;
 
 /**
@@ -20,13 +22,13 @@ public interface PortalContext extends PortalLifeCycle, ServiceContainer, Except
      * 添加参数序列化转换程序
      * @param paramSerialization 参数序列化转换器
      */
-    void addParamSerialization(ParamSerialization<?> paramSerialization);
+    void addParamSerialization(AbstractParamSerialization<?> paramSerialization);
 
     /**
      * 添加对象序列化转换程序
      * @param objectSerialization 对象序列化转换
      */
-    void addObjectSerialization(ObjectSerialization<?> objectSerialization);
+    void addObjectSerialization(AbstractObjectSerialization<?> objectSerialization);
 
     /**
      * 启动

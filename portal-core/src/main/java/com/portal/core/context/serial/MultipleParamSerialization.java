@@ -42,4 +42,8 @@ public class MultipleParamSerialization implements ParamSerialization<Object> {
         supportList.sort(Comparator.comparingInt(AbstractParamSerialization::getDeep));
         return supportList.get(supportList.size() - 1).serial(data);
     }
+
+    public void add(AbstractParamSerialization<?> paramSerialization) {
+        paramSerializationSet.add(paramSerialization);
+    }
 }
