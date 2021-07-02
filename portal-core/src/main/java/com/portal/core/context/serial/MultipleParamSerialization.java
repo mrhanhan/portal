@@ -3,12 +3,8 @@ package com.portal.core.context.serial;
 import com.portal.core.context.ParamSerialization;
 import com.portal.core.model.Param;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * MultipleParamSerialization
@@ -36,11 +32,19 @@ public class MultipleParamSerialization implements ParamSerialization<Object> {
 
     @Override
     public Param serial(Object data) {
-        List<AbstractParamSerialization> supportList = new ArrayList<>(paramSerializationSet);
-        supportList = supportList.stream().filter(t -> t.isSupport(data)).collect(Collectors.toList());
+        int deep = -1;
+        AbstractParamSerialization theBest = null;
+        for (AbstractParamSerialization abstractParamSerialization : paramSerializationSet) {
+            if (abstractParamSerialization.isSupport(data)) {
+                if (deep <= abstractParamSerialization.getDeep()) {
+                    theBest = abstractParamSerialization;
+                    deep = abstractParamSerialization.getDeep();
+                }
+            }
+        }
         // 获取最优序列化项目 进行序列化
-        supportList.sort(Comparator.comparingInt(AbstractParamSerialization::getDeep));
-        return supportList.get(supportList.size() - 1).serial(data);
+        assert theBest != null;
+        return theBest.serial(data);
     }
 
     public void add(AbstractParamSerialization<?> paramSerialization) {

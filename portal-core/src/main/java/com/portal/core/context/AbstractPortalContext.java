@@ -4,8 +4,18 @@ import com.portal.core.connect.Connection;
 import com.portal.core.context.lifecycle.PortalLifeCycleManager;
 import com.portal.core.context.serial.AbstractObjectSerialization;
 import com.portal.core.context.serial.AbstractParamSerialization;
+import com.portal.core.context.serial.ArrayObjectSerialization;
+import com.portal.core.context.serial.ArrayParamSerialization;
+import com.portal.core.context.serial.CollectionObjectSerialization;
+import com.portal.core.context.serial.CollectionParamSerialization;
 import com.portal.core.context.serial.MultipleObjectSerialization;
 import com.portal.core.context.serial.MultipleParamSerialization;
+import com.portal.core.context.serial.NumberObjectSerialization;
+import com.portal.core.context.serial.NumberParamSerialization;
+import com.portal.core.context.serial.ObjectObjectSerialization;
+import com.portal.core.context.serial.ObjectParamSerialization;
+import com.portal.core.context.serial.StringObjectSerialization;
+import com.portal.core.context.serial.StringParamSerialization;
 import com.portal.core.service.ServiceContainer;
 import com.portal.core.service.SimpleServiceContainer;
 import lombok.SneakyThrows;
@@ -68,6 +78,8 @@ public abstract class AbstractPortalContext implements PortalContext{
         // 序列化和反序列化集合
         multipleParamSerialization = new MultipleParamSerialization();
         multipleObjectSerialization = new MultipleObjectSerialization();
+        // 初始化序列化信息
+        initializeSerialization();
     }
 
     @Override
@@ -140,5 +152,23 @@ public abstract class AbstractPortalContext implements PortalContext{
     @Override
     public void onException(Exception e) {
         e.printStackTrace();
+    }
+
+    /**
+     * 初始化序列化
+     */
+    protected  void initializeSerialization() {
+        addParamSerialization(new NumberParamSerialization());
+        addParamSerialization(new StringParamSerialization());
+        addParamSerialization(new ArrayParamSerialization(this.multipleParamSerialization));
+        addParamSerialization(new CollectionParamSerialization(this.multipleParamSerialization));
+        addParamSerialization(new ObjectParamSerialization(this.multipleParamSerialization));
+
+        addObjectSerialization(new NumberObjectSerialization());
+        addObjectSerialization(new StringObjectSerialization());
+        addObjectSerialization(new ArrayObjectSerialization(this.multipleObjectSerialization));
+        addObjectSerialization(new CollectionObjectSerialization(this.multipleObjectSerialization));
+        addObjectSerialization(new ObjectObjectSerialization(this.multipleObjectSerialization));
+
     }
 }

@@ -33,7 +33,7 @@ public class ArrayObjectSerialization extends AbstractObjectSerialization<Object
         if (Objects.nonNull(children)) {
             array = Array.newInstance(cls.getComponentType(), children.length);
             for (int i = 0; i < children.length; i++) {
-                Array.set(array, i, childrenObjectSerialization.serial(param, cls.getComponentType()));
+                Array.set(array, i, childrenObjectSerialization.serial(children[i], cls.getComponentType()));
             }
         }
         return array;

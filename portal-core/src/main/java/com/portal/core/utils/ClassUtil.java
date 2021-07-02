@@ -2,6 +2,11 @@ package com.portal.core.utils;
 
 import lombok.experimental.UtilityClass;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * ClassUtil
  *
@@ -19,7 +24,7 @@ public class ClassUtil {
      */
     public int getDeep(Class<?> cls) {
         int i = 0;
-        while (cls == Object.class) {
+        while (cls != null && cls != Object.class) {
             i ++;
             cls = cls.getSuperclass();
         }
@@ -35,5 +40,19 @@ public class ClassUtil {
             }
         }
         return false;
+    }
+
+    /**
+     * 获取所有字段信息
+     * @return  获取所有字段信息
+     */
+    public List<Field> getAllFiled(Class<?> cls) {
+        Field[] declaredFields = cls.getDeclaredFields();
+        List<Field> fieldList = new ArrayList<>(Arrays.asList(declaredFields));
+        // 判断上级
+        if (cls.getSuperclass() != null  && cls.getSuperclass() != Object.class) {
+            fieldList.addAll(getAllFiled(cls.getSuperclass()));
+        }
+        return fieldList;
     }
 }

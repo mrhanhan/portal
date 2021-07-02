@@ -1,7 +1,5 @@
 package com.portal.core;
 
-import com.portal.core.service.MethodDelegateService;
-import com.portal.core.service.SimpleServiceContainer;
 import lombok.SneakyThrows;
 
 /**
@@ -13,9 +11,6 @@ import lombok.SneakyThrows;
 public class Test {
     @SneakyThrows
     public static void main(String[] args) {
-        SimpleServiceContainer container = new SimpleServiceContainer();
-        container.registerService(new MethodDelegateService("print", new FileService(), "print"));
-
-        System.out.println(container.getService("print").invoke(null));
+        System.out.println(Test.class.toString());
     }
 }
