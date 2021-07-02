@@ -68,12 +68,15 @@ public class DataWriter extends ByteCache{
         // 字段名
         if (param.getFiledName() != null) {
             writeStringAndLength(param.getFiledName());
+            writeStringAndLength(param.getFieldId());
         }
         // 数据和长度
         if (param.getData() != null) {
             byte[] data = param.getData();
             write(ByteVisit.intToBytes(data.length, 4));
             write(data);
+        } else {
+            write(ByteVisit.intToBytes(0, 4));
         }
         // 是否有子参数
         Param[] children = param.getChildren();

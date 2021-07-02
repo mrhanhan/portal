@@ -42,5 +42,9 @@ public class Param implements Serializable {
      * 字段名称
      */
     private String filedName;
+    /**
+     * FieldId
+     */
+    private String fieldId;
 
 }

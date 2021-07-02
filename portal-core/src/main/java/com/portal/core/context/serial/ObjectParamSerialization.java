@@ -44,7 +44,8 @@ public class ObjectParamSerialization extends AbstractParamSerialization<Object>
             field.setAccessible(true);
             Object o = field.get(data);
             Param child = childrenParamSerialization.serial(o);
-            child.setFiledName(generatorFiledName(field));
+            child.setFieldId(generatorFiledName(field));
+            child.setFiledName(field.getName());
             params[i++] = child;
         }
         param.setChildren(params);

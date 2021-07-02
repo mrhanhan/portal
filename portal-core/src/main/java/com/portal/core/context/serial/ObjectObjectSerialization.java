@@ -37,7 +37,7 @@ public class ObjectObjectSerialization extends AbstractObjectSerialization<Objec
         if (Objects.nonNull(children)) {
             Map<String, Param> fieldMap = new HashMap<>();
             for (Param child : children) {
-                fieldMap.put(child.getFiledName(), child);
+                fieldMap.put(child.getFieldId(), child);
             }
             List<Field> fieldList = ClassUtil.getAllFiled(cls);
             for (Field field : fieldList) {

@@ -77,6 +77,7 @@ public class DataReader {
         // 读取字段
         if (hasFiled) {
             param.setFiledName(readString());
+            param.setFieldId(readString());
         }
         // 数据长度
         int length = readInt();
