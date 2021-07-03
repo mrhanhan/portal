@@ -1,5 +1,6 @@
 package com.portal.core.context.send;
 
+import com.portal.core.model.Data;
 import com.portal.core.model.Param;
 
 import java.util.HashMap;
@@ -14,17 +15,17 @@ import java.util.function.Consumer;
  */
 public class MapCallingManager implements CallingManager {
 
-    private final Map<String, Consumer<Param>> MAP = new HashMap<>();
+    private final Map<String, Consumer<Data>> MAP = new HashMap<>();
 
     @Override
-    public synchronized void push(String service, String serviceId, String id, Consumer<Param> callback) {
+    public synchronized void push(String service, String serviceId, String id, Consumer<Data> callback) {
         String key = generateKey(service, serviceId, id);
         MAP.put(key, callback);
     }
 
 
     @Override
-    public synchronized void reply(String service, String serviceId, String id, Param param) {
+    public synchronized void reply(String service, String serviceId, String id, Data param) {
         String key = generateKey(service, serviceId, id);
         if (MAP.containsKey(key)) {
             MAP.get(key).accept(param);

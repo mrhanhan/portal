@@ -23,24 +23,31 @@ public class InvokeDataHandler implements DataHandler {
     public final Invoker invoker;
 
     @Override
-    public void onHandler(DataMonitor monitor, byte[] data) {
-        // 处理请求，或者处理响应
-        Data convertToData = null;
-        if (convertToData == null) {
+    public void onHandler(DataMonitor monitor, Data data) {
+        // 是否是响应数据
+        if (data.getOperate() == Data.RETURN) {
+            // 响应调用
+            replyInvoked(data, monitor.getConnection());
             return;
         }
-        // 是否是响应数据
-//        if (convertToData.isResultData()) {
-//            // 响应调用
-//            replyInvoked(convertToData, monitor.getConnection());
-//            return;
-//        }
         // 根据Data进行调用
-        Param invoke = invoker.invoke(convertToData);
+        Param[] invokeReturns = invoker.invoke(data);
         // 进行响应
-        Data result = null /*convertToData.result(invoke)*/;
+        Data result = createReturnData(invokeReturns, data);
         // 写入响应数据
         monitor.getSendResultData().send(result);
+    }
+
+    /**
+     * 创建响应数据
+     * @param invoke    回调方法
+     * @param data      调用数据
+     * @return          返回内容
+     */
+    private Data createReturnData(Param[] invoke, Data data) {
+        data.setParams(invoke);
+        data.setOperate(Data.RETURN);
+        return data;
     }
 
     /**
@@ -50,6 +57,6 @@ public class InvokeDataHandler implements DataHandler {
      */
     protected void replyInvoked(Data result, Connection connection) {
         CallingManager callingManager = connection.getCallingManager();
-//        callingManager.reply(result.getService(), result.getServiceId(), result.getId(), result.getResult());
+        callingManager.reply(result.getServiceName(), result.getServiceId(), result.getId(), result);
     }
 }

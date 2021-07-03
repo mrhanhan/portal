@@ -8,6 +8,9 @@ package com.portal.core.model;
  */
 @lombok.Data
 public class Data {
+
+    public static final int CALL = 1;
+    public static final int RETURN = 0;
     /**
      * 服务名称
      */

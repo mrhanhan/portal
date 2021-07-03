@@ -1,7 +1,10 @@
 package com.portal.core.context;
 
-import com.portal.core.connect.Connection;
+import com.portal.core.context.handler.InvokeDataHandler;
+import com.portal.core.context.invoker.DefaultInvoker;
+import com.portal.core.context.invoker.Invoker;
 import com.portal.core.context.lifecycle.PortalLifeCycleManager;
+import com.portal.core.context.monitor.DefaultDataMonitor;
 import com.portal.core.context.serial.AbstractObjectSerialization;
 import com.portal.core.context.serial.AbstractParamSerialization;
 import com.portal.core.context.serial.ArrayObjectSerialization;
@@ -80,16 +83,15 @@ public abstract class AbstractPortalContext implements PortalContext{
         multipleObjectSerialization = new MultipleObjectSerialization();
         // 初始化序列化信息
         initializeSerialization();
+        // 初始化数据处理器
+        dataHandler = new InvokeDataHandler(createDefaultInvoker());
     }
 
     @Override
     public void onInitialize(PortalContext context) {
         // 初始化连接处理器
-        connectionHandler = new ConnectionHandler() {
-            @Override
-            public void onConnection(Connection connection) {
-
-            }
+        connectionHandler = (connection) -> {
+            monitorManager.addMonitor(new DefaultDataMonitor(connection, dataHandler), true);
         };
         // 数据处理器
         portalLifeCycleManager.onInitialize(context);
@@ -97,6 +99,12 @@ public abstract class AbstractPortalContext implements PortalContext{
 
     @Override
     public void onShutDown(PortalContext context) {
+        // 关闭连接检测器
+        try {
+            connectionMonitor.close();
+        } catch (Exception e) {
+            onException(e);
+        }
         portalLifeCycleManager.onShutDown(context);
     }
 
@@ -106,8 +114,6 @@ public abstract class AbstractPortalContext implements PortalContext{
         connectionMonitor = getConnectionMonitor(connectionHandler);
         // 注册检测项
         monitorManager.addMonitor(connectionMonitor, true);
-        // 数据驱动器
-
         // 调用管理器的启动
         portalLifeCycleManager.onStartup(context);
     }
@@ -170,5 +176,13 @@ public abstract class AbstractPortalContext implements PortalContext{
         addObjectSerialization(new CollectionObjectSerialization(this.multipleObjectSerialization));
         addObjectSerialization(new ObjectObjectSerialization(this.multipleObjectSerialization));
 
+    }
+
+    /**
+     * 创建默认得Invoker
+     * @return  Invoker
+     */
+    protected Invoker createDefaultInvoker() {
+        return new DefaultInvoker(this, multipleObjectSerialization, multipleParamSerialization);
     }
 }

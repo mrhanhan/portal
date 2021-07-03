@@ -1,6 +1,7 @@
 package com.portal.core.context;
 
 import com.portal.core.context.monitor.DataMonitor;
+import com.portal.core.model.Data;
 
 /**
  * DataHandler
@@ -12,7 +13,7 @@ public interface DataHandler {
     /**
      * 数据Handler
      * @param monitor   DataMonitor
-     * @param bytes      bytes
+     * @param data      data
      */
-    void onHandler(DataMonitor monitor, byte[] bytes);
+    void onHandler(DataMonitor monitor, Data data);
 }

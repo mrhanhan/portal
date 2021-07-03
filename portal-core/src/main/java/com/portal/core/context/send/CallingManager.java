@@ -1,6 +1,6 @@
 package com.portal.core.context.send;
 
-import com.portal.core.model.Param;
+import com.portal.core.model.Data;
 
 import java.util.function.Consumer;
 
@@ -19,7 +19,7 @@ public interface CallingManager {
      * @param id            ID
      * @param callback      回调方法
      */
-    void push(String service, String serviceId, String id, Consumer<Param> callback);
+    void push(String service, String serviceId, String id, Consumer<Data> callback);
 
     /**
      * 响应并且移除回调
@@ -28,5 +28,5 @@ public interface CallingManager {
      * @param id        ID
      * @param param     响应结果
      */
-    void reply(String service, String serviceId, String id, Param param);
+    void reply(String service, String serviceId, String id, Data param);
 }
