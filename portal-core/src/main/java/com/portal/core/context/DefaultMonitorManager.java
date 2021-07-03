@@ -32,14 +32,22 @@ public class DefaultMonitorManager implements MonitorManager{
     @Override
     public void addMonitor(Monitor monitor, boolean autoRun) {
         monitorSet.add(monitor);
-        if (autoRun && monitor.getStatus() == Monitor.RUNNING_STATUS) {
-            executorService.submit(monitor);
+        monitor.setMonitorManager(this);
+        if (autoRun && monitor.getStatus() != Monitor.RUNNING_STATUS) {
+            executorService.submit(() -> {
+                try {
+                    monitor.run();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
         }
     }
 
     @Override
     public void removeMonitor(Monitor monitor) {
         monitorSet.remove(monitor);
+        monitor.setMonitorManager(null);
     }
 
     @Override

@@ -50,6 +50,9 @@ public class MultipleObjectSerialization implements ObjectSerialization<Object> 
             }
         }
         // 获取最优序列化项目 进行序列化
+        if (theBest == null) {
+            System.err.println("无法找到Object序列化:" + param + " \n\tClass:" + cls);
+        }
         assert theBest != null;
         return theBest.serial(param, cls);
     }

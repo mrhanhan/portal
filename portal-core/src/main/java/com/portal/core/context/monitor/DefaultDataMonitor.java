@@ -2,7 +2,7 @@ package com.portal.core.context.monitor;
 
 import com.portal.core.connect.Connection;
 import com.portal.core.context.DataHandler;
-import com.portal.core.context.send.SendResultData;
+import com.portal.core.context.send.SendData;
 import com.portal.core.model.Data;
 import com.portal.core.utils.DataReader;
 import com.portal.core.utils.DataWriter;
@@ -13,6 +13,7 @@ import lombok.SneakyThrows;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.function.Consumer;
 
 /**
  * DefaultDataMonitor
@@ -21,7 +22,7 @@ import java.io.OutputStream;
  * @date 2021/7/1 16:33
  */
 @RequiredArgsConstructor
-public class DefaultDataMonitor extends AbstractMonitor implements DataMonitor, SendResultData{
+public class DefaultDataMonitor extends AbstractMonitor implements DataMonitor, SendData {
 
     @Getter
     private final Connection connection;
@@ -30,14 +31,13 @@ public class DefaultDataMonitor extends AbstractMonitor implements DataMonitor, 
     private static final byte[] FLAG = new byte[]{0x2, 0x0, 0x2, 0x1};
 
     @Override
-    public SendResultData getSendResultData() {
+    public SendData getSendResultData() {
         return this;
     }
 
     @Override
     public void close() throws Exception {
         end();
-
     }
 
     @SneakyThrows
@@ -47,10 +47,11 @@ public class DefaultDataMonitor extends AbstractMonitor implements DataMonitor, 
         InputStream input = connection.getInput();
         BufferedInputStream bis = new BufferedInputStream(input);
         DataReader dataReader = new DataReader(bis);
-        byte[] flag = new byte[4];
         try{
             while (isRunning() & connection.isAvailable()) {
+                System.out.println("等待接受数据:");
                 Data data = dataReader.readData();
+                System.out.println("接受数据:" + data);
                 dataHandler.onHandler(this, data);
             }
         }finally {
@@ -63,14 +64,18 @@ public class DefaultDataMonitor extends AbstractMonitor implements DataMonitor, 
 
     @SneakyThrows
     @Override
-    public void send(Data data) {
+    public void send(Data data, Consumer<Data> callback) {
         // 一个连接统一时刻只能有一个线程进行发送数据
         synchronized (connection) {
+            if (callback != null) {
+                connection.getCallingManager().push(data.getServiceName(), data.getServiceId(), data.getId(), callback);
+            }
             OutputStream output = connection.getOutput();
             DataWriter writer  = new DataWriter();
             writer.writeData(data);
             writer.writeTo(output);
             output.flush();
+            System.out.println("写入数据：" + data);
         }
     }
 }

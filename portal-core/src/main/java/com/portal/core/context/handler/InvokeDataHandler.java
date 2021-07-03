@@ -26,14 +26,18 @@ public class InvokeDataHandler implements DataHandler {
     public void onHandler(DataMonitor monitor, Data data) {
         // 是否是响应数据
         if (data.getOperate() == Data.RETURN) {
+            System.out.println("响应数据：" + data);
             // 响应调用
             replyInvoked(data, monitor.getConnection());
             return;
         }
+        System.out.println("执行本地方法：" + data);
         // 根据Data进行调用
         Param[] invokeReturns = invoker.invoke(data);
+        System.out.println("执行本地方法结束：" + invokeReturns);
         // 进行响应
         Data result = createReturnData(invokeReturns, data);
+        System.out.println("调用结束：" + result);
         // 写入响应数据
         monitor.getSendResultData().send(result);
     }

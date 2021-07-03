@@ -4,6 +4,7 @@ import com.portal.core.ExceptionHandler;
 import com.portal.core.connect.ConnectionManager;
 import com.portal.core.context.ConnectionHandler;
 import com.portal.core.context.ConnectionMonitor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -15,8 +16,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public abstract class AbstractConnectionMonitor extends AbstractMonitor implements ConnectionMonitor {
 
+    @Getter
     private final ExceptionHandler exceptionHandler;
+    @Getter
     private final ConnectionHandler handler;
+    @Getter
     private final ConnectionManager connectionManager;
 
     @Override
@@ -26,6 +30,7 @@ public abstract class AbstractConnectionMonitor extends AbstractMonitor implemen
 
     @Override
     public void close() throws Exception {
+        end();
         connectionManager.close();
     }
 

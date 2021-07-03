@@ -28,8 +28,9 @@ public class DefaultServiceDiscovery extends AbstractServiceDiscovery {
         return connectionManager.getConnection(getMetadata.apply(connectionManager));
     }
 
+    @SneakyThrows
     @Override
-    public void close() throws Exception {
+    public void close() {
         super.close();
         connectionManager.close();
     }

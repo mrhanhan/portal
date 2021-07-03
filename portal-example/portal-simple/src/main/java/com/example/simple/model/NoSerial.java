@@ -1,5 +1,7 @@
 package com.example.simple.model;
 
+import java.io.Serializable;
+
 /**
  * NoSerial
  * 不可序列化的对象
@@ -7,7 +9,7 @@ package com.example.simple.model;
  * @date 2021/7/1 10:15
  */
 
-public class NoSerial {
+public class NoSerial implements Serializable {
 
     private int count;
 

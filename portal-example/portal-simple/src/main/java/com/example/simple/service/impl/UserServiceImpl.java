@@ -1,14 +1,10 @@
 package com.example.simple.service.impl;
 
-import com.example.simple.model.Account;
 import com.example.simple.model.NoSerial;
 import com.example.simple.model.User;
 import com.example.simple.service.AccountService;
 import com.example.simple.service.UserService;
-import com.portal.core.connect.socket.ClientSocketConnectionManager;
-import com.portal.core.connect.socket.SocketConnectMetadata;
-import com.portal.core.discovery.DefaultServiceDiscovery;
-import com.portal.core.discovery.ServiceDiscovery;
+import lombok.Setter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -26,13 +22,11 @@ public class UserServiceImpl implements UserService {
 
     private ByteArrayOutputStream output = new ByteArrayOutputStream();
 
+    @Setter
     private AccountService accountService;
 
     public UserServiceImpl() {
-        ClientSocketConnectionManager manager = new ClientSocketConnectionManager();
-        ServiceDiscovery discovery = new DefaultServiceDiscovery(manager, (c) -> SocketConnectMetadata.createSocketMetadata("localhost", 1721));
-        // 发现账户服务
-        accountService = discovery.getService("accountService", AccountService.class);
+
     }
 
     @Override
@@ -53,9 +47,9 @@ public class UserServiceImpl implements UserService {
         user.setRole("超管");
         user.setNoSerial(new NoSerial());
         // 远程调用
-        Account account = accountService.createAccount(user);
-        user.setAccount(account);
-        System.out.println("用户服务被调用-" + count);
+//        Account account = accountService.createAccount(user);
+//        user.setAccount(account);
+//        System.out.println("用户服务被调用-" + count);
         return user;
     }
 

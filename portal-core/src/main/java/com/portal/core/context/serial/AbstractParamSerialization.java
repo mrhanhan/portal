@@ -34,7 +34,7 @@ public abstract class AbstractParamSerialization<T> implements ParamSerializatio
 
     @Override
     public boolean isSupport(T t) {
-        return genericType.isAssignableFrom(t.getClass());
+        return t != null && genericType.isAssignableFrom(t.getClass());
     }
 
     /**

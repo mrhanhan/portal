@@ -35,4 +35,8 @@ public interface PortalContext extends PortalLifeCycle, ServiceContainer, Except
      */
     void startUp();
 
+    /**
+     * 关闭
+     */
+    void shutDown();
 }

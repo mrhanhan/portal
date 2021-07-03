@@ -43,6 +43,9 @@ public class MultipleParamSerialization implements ParamSerialization<Object> {
             }
         }
         // 获取最优序列化项目 进行序列化
+        if (theBest == null) {
+            System.err.println("无法找到Param序列化:" + data);
+        }
         assert theBest != null;
         return theBest.serial(data);
     }

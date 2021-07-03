@@ -1,6 +1,9 @@
 package com.portal.core.context.monitor;
 
 import com.portal.core.context.Monitor;
+import com.portal.core.context.MonitorManager;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * AbstractMonitor
@@ -11,6 +14,10 @@ import com.portal.core.context.Monitor;
 public abstract class AbstractMonitor implements Monitor {
 
     public int status;
+
+    @Setter
+    @Getter
+    private MonitorManager monitorManager;
 
     @Override
     public synchronized int getStatus() {
@@ -37,6 +44,13 @@ public abstract class AbstractMonitor implements Monitor {
      */
     public synchronized void end() {
         status = STOP_STATUS;
+    }
+
+    @Override
+    public void close() throws Exception {
+        if (monitorManager != null) {
+            monitorManager.removeMonitor(this);
+        }
     }
 
     public synchronized void modify(int status) {

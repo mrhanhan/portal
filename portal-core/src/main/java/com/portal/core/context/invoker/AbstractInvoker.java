@@ -25,10 +25,6 @@ public abstract class AbstractInvoker implements Invoker {
 
     @Getter
     @Setter
-    private ServiceContainer serviceContainer;
-
-    @Getter
-    @Setter
     private ObjectSerialization objectSerialization;
 
     @Getter
@@ -40,7 +36,7 @@ public abstract class AbstractInvoker implements Invoker {
     public Param[] invoke(Data data) {
         // 获取服务
         String serviceName = data.getServiceName();
-        Service service = serviceContainer.getService(serviceName);
+        Service service = getServiceContainer().getService(serviceName);
         // 获取服务ID
         if (service == null) {
             return new Param[]{paramSerialization.serial(new ServiceNotFoundException(serviceName))};
@@ -56,6 +52,12 @@ public abstract class AbstractInvoker implements Invoker {
         }
         return new Param[]{paramSerialization.serial(result)};
     }
+
+    /**
+     * 获取服务容器
+     * @return  获取服务容器
+     */
+    protected abstract ServiceContainer getServiceContainer();
 
     /**
      * 参数解析

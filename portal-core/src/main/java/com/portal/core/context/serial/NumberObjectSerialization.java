@@ -28,7 +28,7 @@ public class NumberObjectSerialization extends AbstractObjectSerialization<Numbe
         byte[] decimalVal = param.getData();
         boolean flag = false;
         int scale = 0;
-        if (bytes.length + 4 > DECIMAL_FLAG_DATA.length && ByteVisit.equ(bytes, DECIMAL_FLAG_DATA)) {
+        if (bytes.length > DECIMAL_FLAG_DATA.length + 4  && ByteVisit.equ(bytes, DECIMAL_FLAG_DATA)) {
             flag = true;
             decimalVal = ByteVisit.get(bytes, DECIMAL_FLAG_DATA.length + 4, bytes.length - (DECIMAL_FLAG_DATA.length + 4));
             scale = ByteVisit.bytesToInt(ByteVisit.get(bytes, DECIMAL_FLAG_DATA.length, 4));

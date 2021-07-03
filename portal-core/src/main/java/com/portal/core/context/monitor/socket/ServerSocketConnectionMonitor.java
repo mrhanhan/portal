@@ -1,6 +1,7 @@
 package com.portal.core.context.monitor.socket;
 
 import com.portal.core.connect.socket.ServerSocketConnectionManager;
+import com.portal.core.connect.socket.SocketConnectMetadata;
 import com.portal.core.context.ConnectionHandler;
 import com.portal.core.context.PortalContext;
 import com.portal.core.context.monitor.AbstractConnectionMonitor;
@@ -17,4 +18,16 @@ public class ServerSocketConnectionMonitor extends AbstractConnectionMonitor {
         super(context, handler, new ServerSocketConnectionManager(port));
     }
 
+    @Override
+    public void run() {
+        begin();
+        while (isRunning()) {
+            SocketConnectMetadata.ServerSocketConnectMetadata metadata = new SocketConnectMetadata.ServerSocketConnectMetadata();
+            try {
+                getHandler().onConnection(getConnectionManager().getConnection(metadata));
+            } catch (Exception e) {
+                getExceptionHandler().onException(e);
+            }
+        }
+    }
 }

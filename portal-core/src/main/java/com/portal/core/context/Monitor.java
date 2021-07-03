@@ -21,4 +21,16 @@ public interface Monitor extends Runnable, AutoCloseable{
      * @return  状态
      */
     int getStatus();
+
+    /**
+     * 设置检查项管理器
+     * @param manager   检查项管理器
+     */
+    void setMonitorManager(MonitorManager manager);
+
+    /**
+     * 获取检查项管理器
+     * @return  检查项管理器
+     */
+    MonitorManager getMonitorManager();
 }

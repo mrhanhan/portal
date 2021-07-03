@@ -2,7 +2,7 @@ package com.portal.core.context.monitor;
 
 import com.portal.core.connect.Connection;
 import com.portal.core.context.Monitor;
-import com.portal.core.context.send.SendResultData;
+import com.portal.core.context.send.SendData;
 
 /**
  * DataMonitor
@@ -21,5 +21,5 @@ public interface DataMonitor extends Monitor {
      * 获取检测项的发送响应数据功能
      * @return  SendResultData
      */
-    SendResultData getSendResultData();
+    SendData getSendResultData();
 }

@@ -38,6 +38,6 @@ public class ArrayParamSerialization extends AbstractParamSerialization<Object> 
 
     @Override
     public boolean isSupport(Object o) {
-        return o.getClass().isArray();
+        return o != null && o.getClass().isArray();
     }
 }

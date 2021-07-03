@@ -124,9 +124,13 @@ public class DataReader {
         }
         int offset = 0;
         int l = 0;
-        while ((l = inputStream.read(bytes, offset, length - offset)) + offset < length) {
+        do {
+            l = inputStream.read(bytes, offset, length - offset);
+            if (l == -1) {
+                l = 0;
+            }
             offset += l;
-        }
+        }while (offset < length);
         return bytes;
     }
 

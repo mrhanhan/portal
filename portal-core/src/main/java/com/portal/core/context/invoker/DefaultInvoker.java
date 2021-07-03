@@ -13,8 +13,15 @@ import com.portal.core.service.ServiceContainer;
  */
 public class DefaultInvoker extends AbstractInvoker{
 
+    private ServiceContainer serviceContainer;
+
     public DefaultInvoker(ServiceContainer serviceContainer, ObjectSerialization objectSerialization, ParamSerialization paramSerialization) {
-        super(serviceContainer, objectSerialization, paramSerialization);
+        super(objectSerialization, paramSerialization);
+        this.serviceContainer = serviceContainer;
     }
 
+    @Override
+    public ServiceContainer getServiceContainer() {
+        return serviceContainer;
+    }
 }

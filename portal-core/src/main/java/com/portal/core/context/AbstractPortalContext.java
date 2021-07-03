@@ -13,6 +13,8 @@ import com.portal.core.context.serial.CollectionObjectSerialization;
 import com.portal.core.context.serial.CollectionParamSerialization;
 import com.portal.core.context.serial.MultipleObjectSerialization;
 import com.portal.core.context.serial.MultipleParamSerialization;
+import com.portal.core.context.serial.NullObjectSerialization;
+import com.portal.core.context.serial.NullParamSerialization;
 import com.portal.core.context.serial.NumberObjectSerialization;
 import com.portal.core.context.serial.NumberParamSerialization;
 import com.portal.core.context.serial.ObjectObjectSerialization;
@@ -91,6 +93,7 @@ public abstract class AbstractPortalContext implements PortalContext{
     public void onInitialize(PortalContext context) {
         // 初始化连接处理器
         connectionHandler = (connection) -> {
+            System.out.println("监听到连接：" + connection);
             monitorManager.addMonitor(new DefaultDataMonitor(connection, dataHandler), true);
         };
         // 数据处理器
@@ -121,6 +124,7 @@ public abstract class AbstractPortalContext implements PortalContext{
     @SneakyThrows
     @Override
     public void startUp() {
+        this.onInitialize(this);
         this.onStartup(this);
         // 等待
         try  {
@@ -129,6 +133,13 @@ public abstract class AbstractPortalContext implements PortalContext{
             }
         } finally {
             this.onShutDown(this);
+        }
+    }
+
+    @Override
+    public void shutDown() {
+        synchronized (statusLock) {
+            statusLock.notify();
         }
     }
 
@@ -164,12 +175,14 @@ public abstract class AbstractPortalContext implements PortalContext{
      * 初始化序列化
      */
     protected  void initializeSerialization() {
+        addParamSerialization(new NullParamSerialization());
         addParamSerialization(new NumberParamSerialization());
         addParamSerialization(new StringParamSerialization());
         addParamSerialization(new ArrayParamSerialization(this.multipleParamSerialization));
         addParamSerialization(new CollectionParamSerialization(this.multipleParamSerialization));
         addParamSerialization(new ObjectParamSerialization(this.multipleParamSerialization));
 
+        addObjectSerialization(new NullObjectSerialization());
         addObjectSerialization(new NumberObjectSerialization());
         addObjectSerialization(new StringObjectSerialization());
         addObjectSerialization(new ArrayObjectSerialization(this.multipleObjectSerialization));

@@ -7,7 +7,7 @@ package com.portal.core.discovery;
  * @author Mrhan
  * @date 2021/6/30 16:27
  */
-public interface ServiceDiscovery extends AutoCloseable {
+public interface ServiceDiscovery {
 
     /**
      * 获取服务名称
