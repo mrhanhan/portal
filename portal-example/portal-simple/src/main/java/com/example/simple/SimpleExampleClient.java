@@ -7,8 +7,6 @@ import com.portal.core.connect.socket.ClientSocketConnectionManager;
 import com.portal.core.connect.socket.SocketConnectMetadata;
 import com.portal.core.discovery.DefaultServiceDiscovery;
 
-import java.io.File;
-
 /**
  * SimpleExampleClient
  *
@@ -21,23 +19,17 @@ public class SimpleExampleClient {
         ClientSocketConnectionManager manager = new ClientSocketConnectionManager();
         DefaultServiceDiscovery discovery = new DefaultServiceDiscovery(manager, (c) -> SocketConnectMetadata.createSocketMetadata("localhost", 1720));
         UserService userService = discovery.getService("userService", UserService.class);
-        User userInfo = userService.getUserInfo(1L);
-        System.out.println(userInfo);
+        for (int i = 0; i < 10; i++) {
+            long time = System.currentTimeMillis();
+            User userInfo = userService.getUserInfo(1L);
+            System.out.println(userInfo);
+            System.out.println(System.currentTimeMillis() - time);
+        }
         // 获取非序列化对象
         NoSerial noSerial = userService.test();
         // 做添加操作
         noSerial.add();
         noSerial.add();
         System.out.println(noSerial.getCount());
-        // file
-        File file = userService.file();
-        System.out.println(file.getName());
-        // output
-//        OutputStream outputStream = userService.output();
-//        outputStream.write("Hello World Portal".getBytes(StandardCharsets.UTF_8));
-//        System.out.println(userService.printOutput());
-
-        discovery.close();
-        System.exit(0);
     }
 }
