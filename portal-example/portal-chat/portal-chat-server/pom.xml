@@ -3,35 +3,26 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>portal</artifactId>
+        <artifactId>portal-chat</artifactId>
         <groupId>com.flowerpot</groupId>
         <version>0.2.5</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>portal-example</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>portal-chat-server</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
-    <modules>
-        <module>portal-simple</module>
-        <module>portal-chat</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>com.flowerpot</groupId>
+            <artifactId>portal-chat-common</artifactId>
+            <version>0.2.5</version>
+        </dependency>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.flowerpot</groupId>
-                <artifactId>portal-core</artifactId>
-                <version>0.2.5</version>
-            </dependency>
-        </dependencies>
-
-    </dependencyManagement>
-
+    </dependencies>
 
 </project>

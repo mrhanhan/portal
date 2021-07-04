@@ -95,7 +95,7 @@ public abstract class AbstractPortalContext implements PortalContext{
     public void onInitialize(PortalContext context) {
         // 初始化连接处理器
         connectionHandler = (connection) -> {
-            // System.out.println("监听到连接：" + connection);
+            System.out.println("监听到连接：" + connection);
             monitorManager.addMonitor(new DefaultDataMonitor(connection, dataHandler), true);
         };
         // 数据处理器

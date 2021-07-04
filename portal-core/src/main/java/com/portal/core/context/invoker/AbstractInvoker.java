@@ -54,6 +54,7 @@ public abstract class AbstractInvoker implements Invoker {
         Object result = null;
         try {
             result = service.invoke(data.getServiceId(), args);
+            System.out.println("Result:" + result);
             return new Param[]{paramSerialization.serial(result, options.setSerialType(result != null ? result.getClass() : null))};
         } catch (Exception e) {
             e.printStackTrace();

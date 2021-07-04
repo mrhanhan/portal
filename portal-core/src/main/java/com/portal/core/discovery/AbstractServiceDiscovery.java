@@ -100,7 +100,7 @@ public abstract class AbstractServiceDiscovery implements ServiceDiscovery{
             AtomicBoolean status = new AtomicBoolean(false);
             Object[] result = new Object[1];
             Object lock = new Object();
-            // System.out.println("发起调用:" + data);
+            System.out.println("发起调用:" + data);
             dataMonitor.getSendResultData().send(data, (resultData) -> {
                 Param[] params = resultData.getParams();
                 if (params.length > 0) {
