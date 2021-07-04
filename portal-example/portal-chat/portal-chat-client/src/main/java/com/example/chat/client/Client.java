@@ -54,6 +54,7 @@ public class Client {
         connectBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // 注册回调方法，服务器收到消息调用回调方法刷新表格
                 registerClientService.register(new UserInfo(textField.getText()), callback);
             }
         });
@@ -68,6 +69,7 @@ public class Client {
         sendBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // 发送数据
                 String text = message.getText();
                 Message msg = new Message();
                 msg.setContent(text);
