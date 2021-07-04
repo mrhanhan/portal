@@ -32,7 +32,7 @@ public class ServerServiceImpl implements RegisterClientService, SendMessageServ
         Message message = new Message();
         message.setContent("欢迎加入");
         message.setUserInfo(new UserInfo("系统"));
-        callback.messageCallback(message);
+        send(message);
     }
 
     @Override
