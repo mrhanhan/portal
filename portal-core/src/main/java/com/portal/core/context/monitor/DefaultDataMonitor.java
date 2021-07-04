@@ -51,6 +51,8 @@ public class DefaultDataMonitor extends AbstractMonitor implements DataMonitor, 
             while (isRunning() & connection.isAvailable()) {
                 System.out.println("等待接受数据:");
                 Data data = dataReader.readData();
+                data.setConnection(connection);
+                data.setDataMonitor(this);
                 System.out.println("接受数据:" + data);
                 dataHandler.onHandler(this, data);
             }

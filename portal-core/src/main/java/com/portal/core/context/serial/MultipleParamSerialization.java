@@ -21,9 +21,9 @@ public class MultipleParamSerialization implements ParamSerialization<Object> {
     }
 
     @Override
-    public boolean isSupport(Object o) {
+    public boolean isSupport(Object o, SerializationOptions options) {
         for (AbstractParamSerialization paramSerialization : paramSerializationSet) {
-            if (paramSerialization.isSupport(o)) {
+            if (paramSerialization.isSupport(o, options)) {
                 return true;
             }
         }
@@ -31,11 +31,11 @@ public class MultipleParamSerialization implements ParamSerialization<Object> {
     }
 
     @Override
-    public Param serial(Object data) {
+    public Param serial(Object data, SerializationOptions options) {
         int deep = -1;
         AbstractParamSerialization theBest = null;
         for (AbstractParamSerialization abstractParamSerialization : paramSerializationSet) {
-            if (abstractParamSerialization.isSupport(data)) {
+            if (abstractParamSerialization.isSupport(data, options)) {
                 if (deep <= abstractParamSerialization.getDeep()) {
                     theBest = abstractParamSerialization;
                     deep = abstractParamSerialization.getDeep();
@@ -47,7 +47,7 @@ public class MultipleParamSerialization implements ParamSerialization<Object> {
             System.err.println("无法找到Param序列化:" + data);
         }
         assert theBest != null;
-        return theBest.serial(data);
+        return theBest.serial(data, options);
     }
 
     public void add(AbstractParamSerialization<?> paramSerialization) {

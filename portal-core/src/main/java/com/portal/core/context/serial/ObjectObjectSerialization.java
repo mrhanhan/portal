@@ -30,8 +30,8 @@ public class ObjectObjectSerialization extends AbstractObjectSerialization<Objec
 
     @SneakyThrows
     @Override
-    public Object serial(Param param, Type type) {
-        Class<?> cls = (Class<?>) type;
+    public Object serial(Param param, SerializationOptions options) {
+        Class<?> cls = (Class<?>) options.getSerialType();
         Object o = cls.newInstance();
         Param[] children = param.getChildren();
         if (Objects.nonNull(children)) {
@@ -45,7 +45,7 @@ public class ObjectObjectSerialization extends AbstractObjectSerialization<Objec
                 if (fieldMap.containsKey(name)) {
                     Param childParam =  fieldMap.get(name);
                     field.setAccessible(true);
-                    field.set(o, childrenObjectSerialization.serial(childParam, field.getGenericType()));
+                    field.set(o, childrenObjectSerialization.serial(childParam, options.copy().setSerialType(field.getGenericType())));
                 }
             }
         }
@@ -54,7 +54,7 @@ public class ObjectObjectSerialization extends AbstractObjectSerialization<Objec
 
     @Override
     public boolean isSupport(Param param, Type type) {
-        if (param.getType() != ParamTypeEnum.OBJECT) {
+        if (param.getType() != ParamTypeEnum.OBJECT && param.isQuote()) {
             return false;
         }
         if (type instanceof Class) {

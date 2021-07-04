@@ -19,6 +19,8 @@ import com.portal.core.context.serial.NumberObjectSerialization;
 import com.portal.core.context.serial.NumberParamSerialization;
 import com.portal.core.context.serial.ObjectObjectSerialization;
 import com.portal.core.context.serial.ObjectParamSerialization;
+import com.portal.core.context.serial.QuoteObjectObjectSerialization;
+import com.portal.core.context.serial.QuoteObjectParamSerialization;
 import com.portal.core.context.serial.StringObjectSerialization;
 import com.portal.core.context.serial.StringParamSerialization;
 import com.portal.core.service.ServiceContainer;
@@ -181,6 +183,7 @@ public abstract class AbstractPortalContext implements PortalContext{
         addParamSerialization(new ArrayParamSerialization(this.multipleParamSerialization));
         addParamSerialization(new CollectionParamSerialization(this.multipleParamSerialization));
         addParamSerialization(new ObjectParamSerialization(this.multipleParamSerialization));
+        addParamSerialization(new QuoteObjectParamSerialization());
 
         addObjectSerialization(new NullObjectSerialization());
         addObjectSerialization(new NumberObjectSerialization());
@@ -188,6 +191,7 @@ public abstract class AbstractPortalContext implements PortalContext{
         addObjectSerialization(new ArrayObjectSerialization(this.multipleObjectSerialization));
         addObjectSerialization(new CollectionObjectSerialization(this.multipleObjectSerialization));
         addObjectSerialization(new ObjectObjectSerialization(this.multipleObjectSerialization));
+        addObjectSerialization(new QuoteObjectObjectSerialization(multipleObjectSerialization, multipleParamSerialization));
 
     }
 

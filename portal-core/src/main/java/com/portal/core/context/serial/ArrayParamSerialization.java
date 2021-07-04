@@ -25,12 +25,13 @@ public class ArrayParamSerialization extends AbstractParamSerialization<Object> 
 
 
     @Override
-    public Param serial(Object data) {
+    public Param serial(Object data, SerializationOptions options) {
         Param param = createParam(ParamTypeEnum.ARRAY);
         int size = Array.getLength(data);
         Param[] children = new Param[size];
         for (int i = 0; i < size; i++) {
-            children[i] = childrenParamSerialization.serial(Array.get(data, i));
+            Object o = Array.get(data, i);
+            children[i] = childrenParamSerialization.serial(o, options.copy().parseType(o));
         }
         param.setChildren(children);
         return param;
@@ -39,5 +40,10 @@ public class ArrayParamSerialization extends AbstractParamSerialization<Object> 
     @Override
     public boolean isSupport(Object o) {
         return o != null && o.getClass().isArray();
+    }
+
+    @Override
+    public int getDeep() {
+        return 1;
     }
 }

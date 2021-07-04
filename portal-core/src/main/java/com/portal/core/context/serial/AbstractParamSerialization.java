@@ -33,8 +33,21 @@ public abstract class AbstractParamSerialization<T> implements ParamSerializatio
     }
 
     @Override
+    public boolean isSupport(T data, SerializationOptions options) {
+        return isSupport(data);
+    }
+
     public boolean isSupport(T t) {
         return t != null && genericType.isAssignableFrom(t.getClass());
+    }
+
+    @Override
+    public Param serial(T data, SerializationOptions options) {
+        return serial(data);
+    }
+
+    public Param serial(T data) {
+        return null;
     }
 
     /**

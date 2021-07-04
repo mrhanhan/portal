@@ -38,12 +38,13 @@ public class CollectionObjectSerialization extends AbstractObjectSerialization<C
     private ObjectSerialization<Object> childrenObjectSerialization;
 
     @Override
-    public Collection serial(Param param, Type type) {
+    public Collection serial(Param param, SerializationOptions options) {
         // 判断是否是 List
         Collection collection;
         Class<?> cls = Collection.class;
         // 集合内容类型
         Type componentType = Object.class;
+        Type type = options.getSerialType();
         if (type instanceof Class<?>) {
             cls = (Class<?>) type;
         } else if (type instanceof ParameterizedType) {
@@ -83,7 +84,7 @@ public class CollectionObjectSerialization extends AbstractObjectSerialization<C
         // 判断是否是Collection
         if (children != null) {
             for (Param child : children) {
-                collection.add(childrenObjectSerialization.serial(child, componentType));
+                collection.add(childrenObjectSerialization.serial(child, options.copy().setSerialType(componentType)));
             }
         }
         return collection;

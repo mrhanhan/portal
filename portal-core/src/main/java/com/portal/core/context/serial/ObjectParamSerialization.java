@@ -32,7 +32,7 @@ public class ObjectParamSerialization extends AbstractParamSerialization<Object>
 
     @SneakyThrows
     @Override
-    public Param serial(Object data) {
+    public Param serial(Object data, SerializationOptions options) {
         Param param = createParam(ParamTypeEnum.OBJECT);
         // 序列化参数
         Class<?> aClass = data.getClass();
@@ -43,7 +43,7 @@ public class ObjectParamSerialization extends AbstractParamSerialization<Object>
         for (Field field : fieldList) {
             field.setAccessible(true);
             Object o = field.get(data);
-            Param child = childrenParamSerialization.serial(o);
+            Param child = childrenParamSerialization.serial(o, options.copy().setSerialType(o != null ? o.getClass() : null));
             child.setFieldId(generatorFiledName(field));
             child.setFiledName(field.getName());
             params[i++] = child;

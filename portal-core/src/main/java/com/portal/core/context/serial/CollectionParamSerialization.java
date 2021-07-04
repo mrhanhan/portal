@@ -23,13 +23,13 @@ public class CollectionParamSerialization extends AbstractParamSerialization<Col
     private ParamSerialization<Object> childrenParamSerialization;
 
     @Override
-    public Param serial(Collection data) {
+    public Param serial(Collection data, SerializationOptions options) {
         Param param = createParam(ParamTypeEnum.ARRAY);
         int size = data.size();
         Param[] children = new Param[size];
         int i = 0;
         for (Object obj : data) {
-            children[i ++] = childrenParamSerialization.serial(obj);
+            children[i ++] = childrenParamSerialization.serial(obj, options.copy().parseType(obj));
         }
         param.setChildren(children);
         return param;

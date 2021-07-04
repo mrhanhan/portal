@@ -20,6 +20,9 @@ import com.portal.core.context.serial.NumberObjectSerialization;
 import com.portal.core.context.serial.NumberParamSerialization;
 import com.portal.core.context.serial.ObjectObjectSerialization;
 import com.portal.core.context.serial.ObjectParamSerialization;
+import com.portal.core.context.serial.QuoteObjectObjectSerialization;
+import com.portal.core.context.serial.QuoteObjectParamSerialization;
+import com.portal.core.context.serial.SerializationOptions;
 import com.portal.core.context.serial.StringObjectSerialization;
 import com.portal.core.context.serial.StringParamSerialization;
 import com.portal.core.model.Data;
@@ -28,7 +31,7 @@ import com.portal.core.utils.UniqueCodeGen;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.InvocationHandler;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -72,44 +75,48 @@ public abstract class AbstractServiceDiscovery implements ServiceDiscovery{
         Connection connection = getConnection();
         // 注册检测项
         DataMonitor dataMonitor = registerDataMonitor(connection);
-        enhancer.setCallback(new InvocationHandler() {
-            @Override
-            public Object invoke(Object o, Method method, Object[] objects) throws Throwable {
-                Data data = new Data();
-                data.setOperate(Data.CALL);
-                data.setServiceName(name);
-                data.setServiceId(method.getName());
-                data.setId(UniqueCodeGen.genNumber());
-                if (objects != null) {
-                    Param[] params = new Param[objects.length];
-                    for (int i = 0; i < objects.length; i++) {
-                        params[i] = multipleParamSerialization.serial(objects[i]);
-                    }
-                    data.setParams(params);
-                } else {
-                    data.setParams(new Param[0]);
+        enhancer.setCallback((InvocationHandler) (o, method, objects) -> {
+            Data data = new Data();
+            data.setConnection(connection);
+            data.setOperate(Data.CALL);
+            data.setServiceName(name);
+            data.setDataMonitor(dataMonitor);
+            data.setServiceId(method.getName());
+            data.setId(UniqueCodeGen.genNumber());
+            SerializationOptions options = new SerializationOptions(data.getConnection());
+            options.setSendData(dataMonitor.getSendResultData());
+            options.setServiceContainer(data.getConnection().getSession().getServiceContainer());
+            if (objects != null) {
+                Param[] params = new Param[objects.length];
+                for (int i = 0; i < objects.length; i++) {
+                    Object object = objects[i];
+                    Type type = object == null ? null : object.getClass();
+                    params[i] = multipleParamSerialization.serial(object, options.copy().setSerialType(type));
                 }
-                AtomicBoolean status = new AtomicBoolean(false);
-                Object[] result = new Object[1];
-                Object lock = new Object();
-                System.out.println("发起调用:" + data);
-                dataMonitor.getSendResultData().send(data, (resultData) -> {
-                    Param[] params = resultData.getParams();
-                    if (params.length > 0) {
-                        result[0] = multipleObjectSerialization.serial(params[0], method.getReturnType());
-                    }
-                    status.set(true);
-                    synchronized (lock) {
-                        lock.notifyAll();
-                    }
-                });
-                if (!status.get()) {
-                    synchronized (lock) {
-                        lock.wait();
-                    }
-                }
-                return result[0];
+                data.setParams(params);
+            } else {
+                data.setParams(new Param[0]);
             }
+            AtomicBoolean status = new AtomicBoolean(false);
+            Object[] result = new Object[1];
+            Object lock = new Object();
+            System.out.println("发起调用:" + data);
+            dataMonitor.getSendResultData().send(data, (resultData) -> {
+                Param[] params = resultData.getParams();
+                if (params.length > 0) {
+                    result[0] = multipleObjectSerialization.serial(params[0], options.copy().setSerialType(method.getReturnType()));
+                }
+                status.set(true);
+                synchronized (lock) {
+                    lock.notifyAll();
+                }
+            });
+            if (!status.get()) {
+                synchronized (lock) {
+                    lock.wait();
+                }
+            }
+            return result[0];
         });
         return (T) enhancer.create();
     }
@@ -136,6 +143,7 @@ public abstract class AbstractServiceDiscovery implements ServiceDiscovery{
         multipleParamSerialization.add(new ArrayParamSerialization(multipleParamSerialization));
         multipleParamSerialization.add(new CollectionParamSerialization(multipleParamSerialization));
         multipleParamSerialization.add(new ObjectParamSerialization(multipleParamSerialization));
+        multipleParamSerialization.add(new QuoteObjectParamSerialization());
 
         multipleObjectSerialization = new MultipleObjectSerialization();
         multipleObjectSerialization.add(new NullObjectSerialization());
@@ -144,6 +152,7 @@ public abstract class AbstractServiceDiscovery implements ServiceDiscovery{
         multipleObjectSerialization.add(new ArrayObjectSerialization(multipleObjectSerialization));
         multipleObjectSerialization.add(new CollectionObjectSerialization(multipleObjectSerialization));
         multipleObjectSerialization.add(new ObjectObjectSerialization(multipleObjectSerialization));
+        multipleObjectSerialization.add(new QuoteObjectObjectSerialization(multipleObjectSerialization, multipleParamSerialization));
 
     }
     /**

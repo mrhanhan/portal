@@ -1,5 +1,8 @@
 package com.portal.core.model;
 
+import com.portal.core.connect.Connection;
+import com.portal.core.context.monitor.DataMonitor;
+
 /**
  * Data
  * 调用ID
@@ -11,6 +14,14 @@ public class Data {
 
     public static final int CALL = 1;
     public static final int RETURN = 0;
+    /**
+     * 数据的连接信息
+     */
+    private Connection connection;
+    /**
+     * 检测项
+     */
+    private DataMonitor dataMonitor;
     /**
      * 服务名称
      */

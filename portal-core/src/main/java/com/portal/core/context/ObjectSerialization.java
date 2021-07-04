@@ -1,8 +1,7 @@
 package com.portal.core.context;
 
+import com.portal.core.context.serial.SerializationOptions;
 import com.portal.core.model.Param;
-
-import java.lang.reflect.Type;
 
 /**
  * ParamSerialization
@@ -14,16 +13,16 @@ public interface ObjectSerialization<T>  {
     /**
      * 序列化
      * @param param 序列化
-     * @param type   Type
+     * @param options   Type
      * @return      返回序列化后的Param
      */
-    T serial(Param param, Type type);
+    T serial(Param param, SerializationOptions options);
 
     /**
      * 是否依赖支持
      * @param param Param
-     * @param type   Type
-     * @return  返回Boolan
+     * @param options   Type
+     * @return  返回Boolean
      */
-    boolean isSupport(Param param, Type type);
+    boolean isSupport(Param param, SerializationOptions options);
 }

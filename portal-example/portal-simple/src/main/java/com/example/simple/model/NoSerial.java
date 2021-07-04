@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @date 2021/7/1 10:15
  */
 
-public class NoSerial implements Serializable {
+public class NoSerial  {
 
     private int count;
 

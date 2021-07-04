@@ -3,6 +3,7 @@ package com.portal.core.utils;
 import lombok.experimental.UtilityClass;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -54,5 +55,18 @@ public class ClassUtil {
             fieldList.addAll(getAllFiled(cls.getSuperclass()));
         }
         return fieldList;
+    }
+    /**
+     * 获取所有字段信息
+     * @return  获取所有字段信息
+     */
+    public List<Method> getAllMethods(Class<?> cls) {
+        Method[] declaredMethods = cls.getDeclaredMethods();
+        List<Method> methodList = new ArrayList<>(Arrays.asList(declaredMethods));
+        // 判断上级
+        if (cls.getSuperclass() != null  && cls.getSuperclass() != Object.class) {
+            methodList.addAll(getAllMethods(cls.getSuperclass()));
+        }
+        return methodList;
     }
 }

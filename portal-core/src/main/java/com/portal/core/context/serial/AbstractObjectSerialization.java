@@ -1,6 +1,7 @@
 package com.portal.core.context.serial;
 
 import com.portal.core.context.ObjectSerialization;
+import com.portal.core.model.Param;
 import com.portal.core.utils.ClassUtil;
 import lombok.Getter;
 
@@ -37,5 +38,21 @@ public abstract class AbstractObjectSerialization<T> implements ObjectSerializat
         return ClassUtil.getDeep(genericType);
     }
 
+    @Override
+    public T serial(Param param, SerializationOptions options) {
+        return serial(param, options.getSerialType());
+    }
 
+    public T serial(Param param, Type type) {
+        return null;
+    }
+
+    @Override
+    public boolean isSupport(Param param, SerializationOptions options) {
+        return isSupport(param, options.getSerialType());
+    }
+
+    public boolean isSupport(Param param, Type type) {
+        return false;
+    }
 }

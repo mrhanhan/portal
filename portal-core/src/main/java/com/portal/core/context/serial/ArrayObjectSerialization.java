@@ -26,14 +26,14 @@ public class ArrayObjectSerialization extends AbstractObjectSerialization<Object
     private ObjectSerialization<Object> childrenObjectSerialization;
 
     @Override
-    public Object serial(Param param, Type type) {
-        Class<?> cls = (Class<?>) type;
+    public Object serial(Param param, SerializationOptions options) {
+        Class<?> cls = (Class<?>) options.getSerialType();
         Object array = null;
         Param[] children = param.getChildren();
         if (Objects.nonNull(children)) {
             array = Array.newInstance(cls.getComponentType(), children.length);
             for (int i = 0; i < children.length; i++) {
-                Array.set(array, i, childrenObjectSerialization.serial(children[i], cls.getComponentType()));
+                Array.set(array, i, childrenObjectSerialization.serial(children[i], options.copy().setSerialType(cls.getComponentType())));
             }
         }
         return array;
@@ -46,5 +46,10 @@ public class ArrayObjectSerialization extends AbstractObjectSerialization<Object
                 return  param.getType() == ParamTypeEnum.ARRAY && !param.isQuote();
             }
         } return false;
+    }
+
+    @Override
+    public int getDeep() {
+        return 1;
     }
 }

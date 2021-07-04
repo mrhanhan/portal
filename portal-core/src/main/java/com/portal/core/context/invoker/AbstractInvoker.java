@@ -2,6 +2,7 @@ package com.portal.core.context.invoker;
 
 import com.portal.core.context.ObjectSerialization;
 import com.portal.core.context.ParamSerialization;
+import com.portal.core.context.serial.SerializationOptions;
 import com.portal.core.exception.ServiceNotFoundException;
 import com.portal.core.model.Data;
 import com.portal.core.model.Param;
@@ -36,10 +37,15 @@ public abstract class AbstractInvoker implements Invoker {
     public Param[] invoke(Data data) {
         // 获取服务
         String serviceName = data.getServiceName();
-        Service service = getServiceContainer().getService(serviceName);
-        // 获取服务ID
+        Service service = data.getConnection().getSession().getServiceContainer().getService(serviceName);
         if (service == null) {
-            return new Param[]{paramSerialization.serial(new ServiceNotFoundException(serviceName))};
+            service = getServiceContainer().getService(serviceName);
+        }
+        // 获取服务ID
+        SerializationOptions options = SerializationOptions.of(data.getConnection(), null).setServiceContainer(data.getConnection().getSession().getServiceContainer());
+        options.setSendData(data.getDataMonitor().getSendResultData());
+        if (service == null) {
+            return new Param[]{paramSerialization.serial(new ServiceNotFoundException(serviceName), options.setSerialType(ServiceNotFoundException.class))};
         }
         // 解析参数
         Object[] args = resolveArguments(service, data);
@@ -48,9 +54,9 @@ public abstract class AbstractInvoker implements Invoker {
         try {
             result = service.invoke(data.getServiceId(), args);
         } catch (Exception e) {
-            return new Param[]{paramSerialization.serial(e)};
+            return new Param[]{paramSerialization.serial(e, options.setSerialType(e.getClass()))};
         }
-        return new Param[]{paramSerialization.serial(result)};
+        return new Param[]{paramSerialization.serial(result, options.setSerialType(result != null ? result.getClass() : null))};
     }
 
     /**
@@ -74,7 +80,9 @@ public abstract class AbstractInvoker implements Invoker {
         }
         for (int i = 0; i < args.length; i++) {
             if (i < params.length) {
-                args[i] = objectSerialization.serial(params[i], types[i]);
+                SerializationOptions options = SerializationOptions.of(data.getConnection(), types[i]).setServiceContainer(data.getConnection().getSession().getServiceContainer());
+                options.setSendData(data.getDataMonitor().getSendResultData());
+                args[i] = objectSerialization.serial(params[i], options);
             } else {
                 break;
             }
