@@ -22,12 +22,25 @@ public class SimpleExampleClient {
         long time = System.currentTimeMillis();
         User userInfo = userService.getUserInfo(1L);
         System.out.println(userInfo);
-        System.out.println(System.currentTimeMillis() - time);
+        System.out.println("time:" + (System.currentTimeMillis() - time));
         // 获取非序列化对象
         NoSerial noSerial = userService.test();
         // 做添加操作
+        time = System.currentTimeMillis();
         noSerial.add();
         noSerial.add();
+        System.out.println("time:" + (System.currentTimeMillis() - time));
+        // 做添加操作
+        time = System.currentTimeMillis();
+        noSerial.add();
+        noSerial.add();
+        System.out.println("time:" + (System.currentTimeMillis() - time));
+        // 做添加操作
+        time = System.currentTimeMillis();
+        noSerial.add();
+        noSerial.add();
+        System.out.println("time:" + (System.currentTimeMillis() - time));
+
         System.out.println(noSerial.getCount());
         discovery.close();
     }
