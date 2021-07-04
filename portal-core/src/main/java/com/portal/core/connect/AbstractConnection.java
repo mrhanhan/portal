@@ -31,4 +31,13 @@ public abstract class AbstractConnection implements Connection {
     public boolean isAvailable() {
         return true;
     }
+
+    @Override
+    public void close() throws Exception {
+        if (manager instanceof AbstractCacheConnectionManager) {
+            ((AbstractCacheConnectionManager) manager).removeConnection(this);
+        }
+        // 清除内容
+        session.getServiceContainer().clear();
+    }
 }

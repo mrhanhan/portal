@@ -9,7 +9,6 @@ import com.portal.core.service.SimpleServiceContainer;
 import lombok.Getter;
 import lombok.SneakyThrows;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
@@ -57,7 +56,8 @@ public class SocketConnect extends AbstractConnection implements Connection, Con
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() throws Exception {
+        super.close();
         input.close();
         output.close();
         socket.close();

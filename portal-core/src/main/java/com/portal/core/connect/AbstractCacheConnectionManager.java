@@ -52,6 +52,14 @@ public abstract class AbstractCacheConnectionManager implements ConnectionManage
         return new HashMap<>(6);
     }
 
+    /**
+     * 移除连接
+     * @param connection Connection
+     */
+    public void removeConnection(Connection connection) {
+        cacheMap.remove(connection.getMetadata());
+    }
+
     @Override
     public void close() throws IOException {
         Map<ConnectMetadata, Connection> connectionMap = new HashMap<>(this.cacheMap);

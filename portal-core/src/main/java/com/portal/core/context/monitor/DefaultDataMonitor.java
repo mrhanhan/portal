@@ -38,6 +38,7 @@ public class DefaultDataMonitor extends AbstractMonitor implements DataMonitor, 
     @Override
     public void close() throws Exception {
         end();
+        connection.close();
     }
 
     @SneakyThrows
@@ -48,7 +49,7 @@ public class DefaultDataMonitor extends AbstractMonitor implements DataMonitor, 
         BufferedInputStream bis = new BufferedInputStream(input);
         DataReader dataReader = new DataReader(bis);
         try{
-            while (isRunning() & connection.isAvailable()) {
+            while (isRunning() && connection.isAvailable()) {
                 System.out.println("等待接受数据:");
                 Data data = dataReader.readData();
                 data.setConnection(connection);

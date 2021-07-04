@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
+
 /**
  * SocketConnectMetadata
  * SocketConnectMeta
@@ -25,12 +27,24 @@ public class SocketConnectMetadata implements ConnectMetadata {
         /**
          * 连接HostName
          */
-
         private String hostname;
         /**
          * 连接端口
          */
         private int port;
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ClientSocketConnectMetadata that = (ClientSocketConnectMetadata) o;
+            return port == that.port && Objects.equals(hostname, that.hostname);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(hostname, port);
+        }
     }
 
     public static class ServerSocketConnectMetadata extends SocketConnectMetadata {
