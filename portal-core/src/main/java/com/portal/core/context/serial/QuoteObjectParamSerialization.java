@@ -32,6 +32,7 @@ public class QuoteObjectParamSerialization extends AbstractParamSerialization<Ob
         // 注册服务
         ServiceContainer serviceContainer = options.getServiceContainer();
         String tmpServiceName = UniqueCodeGen.genNumber();
+        param.setQuoteService(tmpServiceName);
         BeanDelegateService service = new BeanDelegateService(tmpServiceName, data, data.getClass());
         List<Method> allMethods = ClassUtil.getAllMethods(data.getClass());
         for (Method method : allMethods) {

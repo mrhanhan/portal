@@ -49,14 +49,16 @@ public class DefaultDataMonitor extends AbstractMonitor implements DataMonitor, 
         DataReader dataReader = new DataReader(bis);
         try{
             while (isRunning() & connection.isAvailable()) {
-                System.out.println("等待接受数据:");
+                // System.out.println("等待接受数据:");
                 Data data = dataReader.readData();
                 data.setConnection(connection);
                 data.setDataMonitor(this);
-                System.out.println("接受数据:" + data);
+                // System.out.println("接受数据:" + data);
                 dataHandler.onHandler(this, data);
             }
-        }finally {
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        } finally {
             bis.close();
             input.close();
             close();
@@ -77,7 +79,7 @@ public class DefaultDataMonitor extends AbstractMonitor implements DataMonitor, 
             writer.writeData(data);
             writer.writeTo(output);
             output.flush();
-            System.out.println("写入数据：" + data);
+            // System.out.println("写入数据：" + data);
         }
     }
 }

@@ -19,20 +19,16 @@ public class SimpleExampleClient {
         ClientSocketConnectionManager manager = new ClientSocketConnectionManager();
         DefaultServiceDiscovery discovery = new DefaultServiceDiscovery(manager, (c) -> SocketConnectMetadata.createSocketMetadata("localhost", 1720));
         UserService userService = discovery.getService("userService", UserService.class);
-        for (int i = 0; i < 3; i++) {
-            new Thread(() -> {
-                long time = System.currentTimeMillis();
-                User userInfo = userService.getUserInfo(1L);
-                System.out.println(userInfo);
-                System.out.println(System.currentTimeMillis() - time);
-            }).start();
-        }
-        Thread.sleep(10000);
+        long time = System.currentTimeMillis();
+        User userInfo = userService.getUserInfo(1L);
+        System.out.println(userInfo);
+        System.out.println(System.currentTimeMillis() - time);
         // 获取非序列化对象
         NoSerial noSerial = userService.test();
         // 做添加操作
         noSerial.add();
         noSerial.add();
         System.out.println(noSerial.getCount());
+        discovery.close();
     }
 }

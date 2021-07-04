@@ -38,11 +38,17 @@ public class BeanDelegateService extends AbstractService{
     public Object invoke(String id, Object... args) throws InvocationTargetException, IllegalAccessException {
         Method method = null;
         method = serviceIdMethodMap.get(id);
+        if (method == null) {
+            return null;
+        }
         return method.invoke(getServiceObject(), args);
     }
 
     @Override
     public Type[] getParamTypes(String id) {
-        return serviceIdMethodMap.get(id).getParameterTypes();
+        if (serviceIdMethodMap.containsKey(id)) {
+            return serviceIdMethodMap.get(id).getParameterTypes();
+        }
+        return new Type[0];
     }
 }

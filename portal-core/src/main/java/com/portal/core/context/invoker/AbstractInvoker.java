@@ -24,6 +24,7 @@ import java.util.Objects;
 @AllArgsConstructor
 public abstract class AbstractInvoker implements Invoker {
 
+
     @Getter
     @Setter
     private ObjectSerialization objectSerialization;
@@ -53,10 +54,11 @@ public abstract class AbstractInvoker implements Invoker {
         Object result = null;
         try {
             result = service.invoke(data.getServiceId(), args);
+            return new Param[]{paramSerialization.serial(result, options.setSerialType(result != null ? result.getClass() : null))};
         } catch (Exception e) {
+            e.printStackTrace();
             return new Param[]{paramSerialization.serial(e, options.setSerialType(e.getClass()))};
         }
-        return new Param[]{paramSerialization.serial(result, options.setSerialType(result != null ? result.getClass() : null))};
     }
 
     /**

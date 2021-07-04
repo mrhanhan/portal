@@ -6,6 +6,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -61,11 +63,24 @@ public class ClassUtil {
      * @return  获取所有字段信息
      */
     public List<Method> getAllMethods(Class<?> cls) {
-        Method[] declaredMethods = cls.getDeclaredMethods();
-        List<Method> methodList = new ArrayList<>(Arrays.asList(declaredMethods));
-        // 判断上级
-        if (cls.getSuperclass() != null  && cls.getSuperclass() != Object.class) {
-            methodList.addAll(getAllMethods(cls.getSuperclass()));
+        return getAllMethods(cls, new HashSet<>());
+    }
+
+    private static List<Method> getAllMethods(Class<?> cls, HashSet<Class<?>> es) {
+        if (es.contains(cls)) {
+            return Collections.emptyList();
+        }
+        es.add(cls);
+        List<Method> methodList = new ArrayList<>();
+        methodList.addAll(Arrays.asList(cls.getDeclaredMethods()));
+        // 父类
+        if (cls.getSuperclass() != null) {
+            methodList.addAll(getAllMethods(cls.getSuperclass(), es));
+        }
+        // 接口
+        Class<?>[] interfaces = cls.getInterfaces();
+        for (Class<?> anInterface : interfaces) {
+            methodList.addAll(getAllMethods(anInterface, es));
         }
         return methodList;
     }
