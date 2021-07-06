@@ -30,4 +30,9 @@ public class ServerSocketConnectionMonitor extends AbstractConnectionMonitor {
             }
         }
     }
+
+    @Override
+    public void close() throws Exception {
+        super.close();
+    }
 }
